@@ -7,3 +7,5 @@
 #property link      "https://www.mql5.com"
 
 #include "typedefs.mqh"
+#include "IndicatorUtils.mqh"
+#include "TimeUtils.mqh"
