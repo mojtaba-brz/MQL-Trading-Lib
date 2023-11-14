@@ -1,0 +1,3 @@
+[submodule "MQL_Easy"]
+	path = MQL_Easy
+	url = git@github.com:mojtaba-brz/MQL_Easy.git
