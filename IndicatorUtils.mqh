@@ -9,6 +9,8 @@
 
 double get_indicator_value_by_handle(int indicator_handle, int shift = 1, int line_index = 0)
   {
+   if(indicator_handle < 0) return EMPTY_VALUE;
+
    double temp_buffer[];
    ArraySetAsSeries(temp_buffer, true);
    CopyBuffer(indicator_handle, line_index, shift, 1, temp_buffer);
@@ -18,6 +20,8 @@ double get_indicator_value_by_handle(int indicator_handle, int shift = 1, int li
   
 GeneralSignal get_close_price_cross_general_signal(string sym, int &handle, int shift = 1)
   {
+   if(handle < 0) return NO_SIGNAL;
+
    double last_close = iClose(sym, PERIOD_CURRENT, shift);
    double last_base_value = get_indicator_value_by_handle(handle, shift);
 
@@ -31,6 +35,8 @@ GeneralSignal get_close_price_cross_general_signal(string sym, int &handle, int 
 //+------------------------------------------------------------------+
 GeneralSignal get_zero_cross_general_signal(int &handle, int shift = 1)
   {
+   if(handle < 0) return NO_SIGNAL;
+   
    double last_indicator_value = get_indicator_value_by_handle(handle, shift);
 
    if(last_indicator_value > 0)
@@ -44,6 +50,8 @@ GeneralSignal get_zero_cross_general_signal(int &handle, int shift = 1)
 //+------------------------------------------------------------------+
 GeneralSignal get_change_slope_general_signal(int &handle, int shift = 1)
   {
+   if(handle < 0) return NO_SIGNAL;
+
 // gather data ==========================================
    double last_indicator_value = get_indicator_value_by_handle(handle, shift);
    double pre_indicator_value = get_indicator_value_by_handle(handle, shift + 1);
@@ -59,6 +67,8 @@ GeneralSignal get_change_slope_general_signal(int &handle, int shift = 1)
 //+------------------------------------------------------------------+
 GeneralSignal get_two_line_cross_general_signal(int &handle, int shift = 1)
   {
+   if(handle < 0) return NO_SIGNAL;
+
 // gather data ==========================================
    double line1 = get_indicator_value_by_handle(handle, shift, 0);
    double line2 = get_indicator_value_by_handle(handle, shift, 1);
