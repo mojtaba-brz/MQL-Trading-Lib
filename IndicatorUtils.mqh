@@ -18,11 +18,11 @@ double get_indicator_value_by_handle(int indicator_handle, int shift = 1, int li
    return temp_buffer[0];
   }
   
-GeneralSignal get_close_price_cross_general_signal(string sym, int &handle, int shift = 1)
+GeneralSignal get_close_price_cross_general_signal(string sym, int &handle, ENUM_TIMEFRAMES time_frame, int shift = 1)
   {
    if(handle < 0) return NO_SIGNAL;
 
-   double last_close = iClose(sym, PERIOD_CURRENT, shift);
+   double last_close = iClose(sym, time_frame, shift);
    double last_base_value = get_indicator_value_by_handle(handle, shift);
 
    if(last_close > last_base_value)

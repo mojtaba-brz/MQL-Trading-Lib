@@ -17,7 +17,7 @@ datetime current_candle_time_sec(string symbol = NULL, ENUM_TIMEFRAMES period = 
       symbol = Symbol();
 
    datetime time[1];
-   CopyTime(Symbol(), PERIOD_CURRENT, 0, 1, time);
+   CopyTime(Symbol(), period, 0, 1, time);
 
    return time[0];
   }
