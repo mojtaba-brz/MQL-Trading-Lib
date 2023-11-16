@@ -1,5 +1,3 @@
-#include <Math/Stat/Math.mqh>
-//+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
 double currency_base_in_dollar(string symbol = NULL)
@@ -27,7 +25,7 @@ double currency_base_in_dollar(string symbol = NULL)
 
       case 'J':
          SymbolInfoDouble("USDJPY", SYMBOL_ASK, price);
-         return MathRound(1/price, 5);
+         return NormalizeDouble(1/price, 5);
          break;
 
       case 'G':
@@ -45,7 +43,7 @@ double currency_base_in_dollar(string symbol = NULL)
             SymbolInfoDouble("USDCAD", SYMBOL_ASK, price);
          else
             SymbolInfoDouble("USDCHF", SYMBOL_ASK, price);
-         return MathRound(1/price, 5);
+         return NormalizeDouble(1/price, 5);
          break;
 
       default:
