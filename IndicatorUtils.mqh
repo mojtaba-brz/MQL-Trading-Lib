@@ -56,6 +56,15 @@ GeneralSignal get_change_slope_general_signal(int &handle, int shift = 1)
    double last_indicator_value = get_indicator_value_by_handle(handle, shift);
    double pre_indicator_value = get_indicator_value_by_handle(handle, shift + 1);
 
+   int i = 1;
+   while(last_indicator_value == pre_indicator_value){
+      i++;
+      pre_indicator_value = get_indicator_value_by_handle(handle, shift + i);
+      if(i > 500){
+         return NO_SIGNAL;
+      }
+   }
+
    if(last_indicator_value > pre_indicator_value)
       return BUY_SIGNAL;
    else
