@@ -27,6 +27,7 @@ enum IndicatorSignalType
 enum GeneralSignal
 {
     NO_SIGNAL,
+    NO_INDICATOR,
     BUY_SIGNAL,
     SELL_SIGNAL
 };
