@@ -1,3 +1,8 @@
+#ifdef __MQL4__
+#define POSITION_TYPE_BUY ORDER_TYPE_BUY
+#define POSITION_TYPE_SELL ORDER_TYPE_SELL
+#endif
+
 enum TradingAction
 {
     TRADING_ACTION_DO_NOTHING,
