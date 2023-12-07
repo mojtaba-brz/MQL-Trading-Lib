@@ -52,33 +52,34 @@ PositionState get_current_position_state_cp(CPosition &cp)
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-void manage_the_trailing_sl_of_position(CPosition &cp, const double sl_diff, double &pre_stop_loss, ENUM_TIMEFRAMES time_frame)
+void manage_the_trailing_sl_of_position(CPosition &cp, const double sl_diff, ENUM_TIMEFRAMES time_frame)
   {
    PositionState cp_state = get_current_position_state_cp(cp);
    if(cp_state == POS_STATE_NO_POSITION)
      {
       return;
      }
+
+   double pre_stop_loss = cp.GetStopLoss();
    double sl = EMPTY_VALUE;
    if(cp_state == POS_STATE_LONG_POSITION)
      {
-      sl = iHigh(cp.GetSymbol(), time_frame, 1)-sl_diff;
-      if(sl < (cp.GetPriceOpen() + 10*SymbolInfoDouble(cp.GetSymbol(), SYMBOL_POINT)))
-         return;
+      sl = SymbolInfoDouble(cp.GetSymbol(), SYMBOL_BID) - sl_diff;
       if(pre_stop_loss != EMPTY_VALUE)
          sl = MathMax(sl, pre_stop_loss);
      }
    else
       if(cp_state == POS_STATE_SHORT_POSITION)
         {
-         sl = iLow(cp.GetSymbol(), time_frame, 1)+sl_diff;
-         if(sl > (cp.GetPriceOpen() - 10*SymbolInfoDouble(cp.GetSymbol(), SYMBOL_POINT)))
-            return;
+         sl = SymbolInfoDouble(cp.GetSymbol(), SYMBOL_ASK) + sl_diff;
          if(pre_stop_loss != EMPTY_VALUE)
             sl = MathMin(sl, pre_stop_loss);
         }
 
-   cp.Modify(sl);
-   pre_stop_loss = sl;
+   if(MathAbs(pre_stop_loss - sl) > 10*SymbolInfoDouble(cp.GetSymbol(), SYMBOL_POINT) && pre_stop_loss != EMPTY_VALUE)
+     {
+      cp.Modify(sl);
+     }
+    pre_stop_loss = sl;
   }
 //+------------------------------------------------------------------+
