@@ -13,3 +13,4 @@
 #include "TimeUtils.mqh"
 #include "ExchageTools.mqh"
 #include "PositionManagementTools.mqh"
+#include "FastClose.mqh"
