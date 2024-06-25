@@ -83,3 +83,18 @@ void manage_the_trailing_sl_of_position(CPosition &cp, const double sl_diff, ENU
     pre_stop_loss = sl;
   }
 //+------------------------------------------------------------------+
+
+double get_trade_volume_based_on_risk_percent(double sl_diff, double risk_percent = 2, string sym = NULL)
+   {
+    double balance = AccountInfoDouble(ACCOUNT_BALANCE);
+
+    double lot = (balance * risk_percent * 0.01) /
+                 (100000 * sl_diff * get_currency_base_in_balance_currency(sym));
+
+    lot = MathMin(lot, SymbolInfoDouble(sym, SYMBOL_VOLUME_MAX));
+    lot = MathMin(lot, (balance / 100000) * 50);
+    lot = MathMax(lot, 0.01);
+    lot = NormalizeDouble(lot, 2);
+    
+    return lot;
+   }
