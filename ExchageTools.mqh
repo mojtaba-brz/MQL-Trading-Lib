@@ -334,3 +334,10 @@ double diff_to_points(double diff, string sym = NULL)
 {
     return diff * MathPow(10, SymbolInfoInteger(sym, SYMBOL_DIGITS));
 }
+
+string broker_symbol_to_standard_symbol(string sym)
+{
+   string sym_array[];
+   StringSplit(sym, '_', sym_array);
+   return sym_array[0];
+}
