@@ -337,7 +337,7 @@ double diff_to_points(double diff, string sym = NULL)
 
 string broker_symbol_to_standard_symbol(string sym)
 {
-   string sym_array[];
-   StringSplit(sym, '_', sym_array);
-   return sym_array[0];
+   string splited_sym_array[];
+   StringSplit(sym, '_', splited_sym_array);
+   return splited_sym_array[0];
 }
