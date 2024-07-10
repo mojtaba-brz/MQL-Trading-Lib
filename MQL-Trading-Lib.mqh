@@ -11,6 +11,6 @@
 #include "typedefs.mqh"
 #include "IndicatorUtils.mqh"
 #include "TimeUtils.mqh"
-#include "ExchageTools.mqh"
+#include "ExchangeTools.mqh"
 #include "PositionManagementTools.mqh"
 #include "FastClose.mqh"

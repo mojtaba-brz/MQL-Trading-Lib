@@ -3,6 +3,7 @@
 //+------------------------------------------------------------------+
 #include "MQL_Easy/MQL_Easy/MQL_Easy.mqh"
 #include "typedefs.mqh"
+#include "ExchangeTools.mqh"
 
 //+------------------------------------------------------------------+
 //|                                                                  |
@@ -92,14 +93,25 @@ void manage_the_trailing_sl_of_position(CPosition &cp, const double sl_diff, ENU
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-void manage_the_trailing_sl(long ticket, double sl_diff)
+void manage_the_trailing_sl(long ticket, double sl_diff, double min_profit_of_tsl_point = -1)
    {
     CPosition position;
     if(!(PositionSelectByTicket(ticket) && position.SelectByTicket(ticket)) || is_zero(sl_diff))
        {
         return;
        }
-
+    
+    if(min_profit_of_tsl_point >= 0)
+      {
+       double open_price = position.GetPriceOpen();
+       string sym = position.GetSymbol();
+       double current_price = SymbolInfoDouble(sym, position.GetType() == TYPE_POSITION_BUY? SYMBOL_BID:SYMBOL_ASK);
+       double sl_effect = (position.GetType() == TYPE_POSITION_BUY? 1:-1) * sl_diff;
+       double profit_point = (position.GetType() == TYPE_POSITION_BUY? 1:-1) * (current_price - open_price + sl_effect);
+       min_profit_of_tsl_point *= SymbolInfoDouble(sym, SYMBOL_POINT);
+       if(profit_point < min_profit_of_tsl_point) return;
+      }
+    
     double pre_stop_loss = position.GetStopLoss();
     double sl = EMPTY_VALUE;
     if(position.GetType() == TYPE_POSITION_BUY)
