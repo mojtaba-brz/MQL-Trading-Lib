@@ -7,6 +7,7 @@
 #property link      "https://www.mql5.com"
 
 #include "MQL_Easy/MQL_Easy/MQL_Easy.mqh"
+#include "NewsTools/NewsTools.mqh"
 
 #include "typedefs.mqh"
 #include "IndicatorUtils.mqh"
@@ -14,3 +15,4 @@
 #include "ExchangeTools.mqh"
 #include "PositionManagementTools.mqh"
 #include "FastClose.mqh"
+#include "ArrayFunctions.mqh"
