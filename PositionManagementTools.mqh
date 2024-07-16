@@ -107,9 +107,10 @@ void manage_the_trailing_sl(long ticket, double sl_diff, double min_profit_of_ts
        string sym = position.GetSymbol();
        double current_price = SymbolInfoDouble(sym, position.GetType() == TYPE_POSITION_BUY? SYMBOL_BID:SYMBOL_ASK);
        double sl_effect = (position.GetType() == TYPE_POSITION_BUY? 1:-1) * sl_diff;
-       double profit_point = (position.GetType() == TYPE_POSITION_BUY? 1:-1) * (current_price - open_price + sl_effect);
-       min_profit_of_tsl_point *= SymbolInfoDouble(sym, SYMBOL_POINT);
-       if(profit_point < min_profit_of_tsl_point) return;
+       double profit_diff = (position.GetType() == TYPE_POSITION_BUY? 1:-1) * (current_price - (open_price + sl_effect));
+       double min_profit_of_tsl_diff = min_profit_of_tsl_point * SymbolInfoDouble(sym, SYMBOL_POINT);
+       Print(open_price);
+       if(profit_diff < min_profit_of_tsl_diff) return;
       }
     
     double pre_stop_loss = position.GetStopLoss();
