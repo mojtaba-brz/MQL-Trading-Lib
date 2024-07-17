@@ -223,55 +223,142 @@ ForexFactoryNews parse_single_ff_news_string(string news)
 //+------------------------------------------------------------------+
 void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym)
    {
+    if(StringCompare(sym, "NZDCHF") == 0)
+       {
+        ArrayResize(news_filter_currencies, 3);
+        ArrayResize(news_filter_titles, 5);
+        news_filter_currencies[0] = "NZD";
+        news_filter_currencies[1] = "USD";
+        news_filter_currencies[2] = "CHF";
+        news_filter_titles[0] = "Official Cash Rate";
+        news_filter_titles[1] = "RBNZ Monetary Policy Statement";
+        news_filter_titles[2] = "RBNZ Rate Statement";
+        news_filter_titles[3] = "SNB Monetary Policy Assessment";
+        news_filter_titles[4] = "SNB Policy Rate";
+        return;
+       }
+
+    if(StringCompare(sym, "CADCHF") == 0)
+       {
+        ArrayResize(news_filter_currencies, 3);
+        ArrayResize(news_filter_titles, 2);
+        news_filter_currencies[0] = "CAD";
+        news_filter_currencies[1] = "USD";
+        news_filter_currencies[2] = "CHF";
+        news_filter_titles[0] = "SNB Monetary Policy Assessment";
+        news_filter_titles[1] = "SNB Policy Rate";
+        return;
+       }
+
+    if(StringCompare(sym, "EURCAD") == 0)
+       {
+        ArrayResize(news_filter_currencies, 3);
+        ArrayResize(news_filter_titles, 7);
+        news_filter_currencies[0] = "EUR";
+        news_filter_currencies[1] = "USD";
+        news_filter_currencies[2] = "CAD";
+        news_filter_titles[0] = "BOC Monetary Policy Report";
+        news_filter_titles[1] = "BOC Rate Statement";
+        news_filter_titles[2] = "Employment Change";
+        news_filter_titles[3] = "Main Refinancing Rate";
+        news_filter_titles[4] = "Monetary Policy Statement";
+        news_filter_titles[5] = "Overnight Rate";
+        news_filter_titles[6] = "Unemployment Rate";
+        return;
+       }
+
     if(StringCompare(sym, "AUDJPY") == 0)
        {
         ArrayResize(news_filter_currencies, 3);
-        ArrayResize(news_filter_titles, 1);
+        ArrayResize(news_filter_titles, 8);
         news_filter_currencies[0] = "AUD";
         news_filter_currencies[1] = "USD";
         news_filter_currencies[2] = "JPY";
-        news_filter_titles[0] = "BOJ Policy Rate";
+        news_filter_titles[0] = "BOJ Outlook Report";
+        news_filter_titles[1] = "BOJ Policy Rate";
+        news_filter_titles[2] = "CPI q\\/q";
+        news_filter_titles[3] = "CPI y\\/y";
+        news_filter_titles[4] = "Cash Rate";
+        news_filter_titles[5] = "Monetary Policy Statement";
+        news_filter_titles[6] = "RBA Rate Statement";
+        news_filter_titles[7] = "Trimmed Mean CPI q\\/q";
+        return;
+       }
+
+    if(StringCompare(sym, "EURCHF") == 0)
+       {
+        ArrayResize(news_filter_currencies, 3);
+        ArrayResize(news_filter_titles, 2);
+        news_filter_currencies[0] = "EUR";
+        news_filter_currencies[1] = "USD";
+        news_filter_currencies[2] = "CHF";
+        news_filter_titles[0] = "SNB Monetary Policy Assessment";
+        news_filter_titles[1] = "SNB Policy Rate";
+        return;
+       }
+
+    if(StringCompare(sym, "GBPUSD") == 0)
+       {
+        ArrayResize(news_filter_currencies, 3);
+        ArrayResize(news_filter_titles, 15);
+        news_filter_currencies[0] = "GBP";
+        news_filter_currencies[1] = "USD";
+        news_filter_currencies[2] = "USD";
+        news_filter_titles[0] = "Asset Purchase Facility";
+        news_filter_titles[1] = "Average Hourly Earnings m\\/m";
+        news_filter_titles[2] = "BOE Inflation Letter";
+        news_filter_titles[3] = "BOE Monetary Policy Report";
+        news_filter_titles[4] = "CPI m\\/m";
+        news_filter_titles[5] = "CPI y\\/y";
+        news_filter_titles[6] = "Core CPI m\\/m";
+        news_filter_titles[7] = "FOMC Economic Projections";
+        news_filter_titles[8] = "FOMC Statement";
+        news_filter_titles[9] = "Federal Funds Rate";
+        news_filter_titles[10] = "MPC Asset Purchase Facility Votes";
+        news_filter_titles[11] = "MPC Official Bank Rate Votes";
+        news_filter_titles[12] = "Monetary Policy Summary";
+        news_filter_titles[13] = "Non-Farm Employment Change";
+        news_filter_titles[14] = "Official Bank Rate";
+        return;
+       }
+
+    if(StringCompare(sym, "GBPAUD") == 0)
+       {
+        ArrayResize(news_filter_currencies, 3);
+        ArrayResize(news_filter_titles, 14);
+        news_filter_currencies[0] = "GBP";
+        news_filter_currencies[1] = "USD";
+        news_filter_currencies[2] = "AUD";
+        news_filter_titles[0] = "Asset Purchase Facility";
+        news_filter_titles[1] = "BOE Inflation Letter";
+        news_filter_titles[2] = "BOE Monetary Policy Report";
+        news_filter_titles[3] = "CPI q\\/q";
+        news_filter_titles[4] = "CPI y\\/y";
+        news_filter_titles[5] = "Cash Rate";
+        news_filter_titles[6] = "Employment Change";
+        news_filter_titles[7] = "MPC Asset Purchase Facility Votes";
+        news_filter_titles[8] = "MPC Official Bank Rate Votes";
+        news_filter_titles[9] = "Monetary Policy Summary";
+        news_filter_titles[10] = "Official Bank Rate";
+        news_filter_titles[11] = "RBA Rate Statement";
+        news_filter_titles[12] = "Trimmed Mean CPI q\\/q";
+        news_filter_titles[13] = "Unemployment Rate";
         return;
        }
 
     if(StringCompare(sym, "AUDNZD") == 0)
        {
         ArrayResize(news_filter_currencies, 3);
-        ArrayResize(news_filter_titles, 3);
+        ArrayResize(news_filter_titles, 6);
         news_filter_currencies[0] = "AUD";
         news_filter_currencies[1] = "USD";
         news_filter_currencies[2] = "NZD";
-        news_filter_titles[0] = "Official Cash Rate";
-        news_filter_titles[1] = "RBNZ Monetary Policy Statement";
-        news_filter_titles[2] = "RBNZ Rate Statement";
-        return;
-       }
-
-    if(StringCompare(sym, "AUDUSD") == 0)
-       {
-        ArrayResize(news_filter_currencies, 3);
-        ArrayResize(news_filter_titles, 7);
-        news_filter_currencies[0] = "AUD";
-        news_filter_currencies[1] = "USD";
-        news_filter_currencies[2] = "USD";
-        news_filter_titles[0] = "Building Permits";
-        news_filter_titles[1] = "CPI m\\/m";
-        news_filter_titles[2] = "CPI y\\/y";
-        news_filter_titles[3] = "Core CPI m\\/m";
-        news_filter_titles[4] = "Existing Home Sales";
-        news_filter_titles[5] = "FOMC Economic Projections";
-        news_filter_titles[6] = "Treasury Currency Report";
-        return;
-       }
-
-    if(StringCompare(sym, "CADJPY") == 0)
-       {
-        ArrayResize(news_filter_currencies, 3);
-        ArrayResize(news_filter_titles, 1);
-        news_filter_currencies[0] = "CAD";
-        news_filter_currencies[1] = "USD";
-        news_filter_currencies[2] = "JPY";
-        news_filter_titles[0] = "BOJ Policy Rate";
+        news_filter_titles[0] = "Cash Rate";
+        news_filter_titles[1] = "Official Cash Rate";
+        news_filter_titles[2] = "RBA Rate Statement";
+        news_filter_titles[3] = "RBNZ Monetary Policy Statement";
+        news_filter_titles[4] = "RBNZ Rate Statement";
+        news_filter_titles[5] = "Trimmed Mean CPI q\\/q";
         return;
        }
 
@@ -290,178 +377,26 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym)
         return;
        }
 
-    if(StringCompare(sym, "EURAUD") == 0)
-       {
-        ArrayResize(news_filter_currencies, 3);
-        ArrayResize(news_filter_titles, 5);
-        news_filter_currencies[0] = "AUD";
-        news_filter_currencies[1] = "USD";
-        news_filter_currencies[2] = "EUR";
-        news_filter_titles[0] = "CPI q\\/q";
-        news_filter_titles[1] = "CPI y\\/y";
-        news_filter_titles[2] = "Cash Rate";
-        news_filter_titles[3] = "RBA Rate Statement";
-        news_filter_titles[4] = "Trimmed Mean CPI q\\/q";
-        return;
-       }
-
-    if(StringCompare(sym, "EURCAD") == 0)
-       {
-        ArrayResize(news_filter_currencies, 3);
-        ArrayResize(news_filter_titles, 3);
-        news_filter_currencies[0] = "CAD";
-        news_filter_currencies[1] = "USD";
-        news_filter_currencies[2] = "EUR";
-        news_filter_titles[0] = "BOC Monetary Policy Report";
-        news_filter_titles[1] = "BOC Rate Statement";
-        news_filter_titles[2] = "Overnight Rate";
-        return;
-       }
-
-    if(StringCompare(sym, "EURCHF") == 0)
-       {
-        ArrayResize(news_filter_currencies, 3);
-        ArrayResize(news_filter_titles, 2);
-        news_filter_currencies[0] = "CHF";
-        news_filter_currencies[1] = "USD";
-        news_filter_currencies[2] = "EUR";
-        news_filter_titles[0] = "SNB Monetary Policy Assessment";
-        news_filter_titles[1] = "SNB Policy Rate";
-        return;
-       }
-
-    if(StringCompare(sym, "EURGBP") == 0)
-       {
-        ArrayResize(news_filter_currencies, 3);
-        ArrayResize(news_filter_titles, 1);
-        news_filter_currencies[0] = "GBP";
-        news_filter_currencies[1] = "USD";
-        news_filter_currencies[2] = "EUR";
-        news_filter_titles[0] = "BOE Inflation Letter";
-        return;
-       }
-
     if(StringCompare(sym, "EURJPY") == 0)
        {
         ArrayResize(news_filter_currencies, 3);
-        ArrayResize(news_filter_titles, 2);
-        news_filter_currencies[0] = "JPY";
-        news_filter_currencies[1] = "USD";
-        news_filter_currencies[2] = "EUR";
-        news_filter_titles[0] = "BOJ Outlook Report";
-        news_filter_titles[1] = "BOJ Policy Rate";
-        return;
-       }
-
-    if(StringCompare(sym, "EURNZD") == 0)
-       {
-        ArrayResize(news_filter_currencies, 3);
         ArrayResize(news_filter_titles, 6);
-        news_filter_currencies[0] = "NZD";
-        news_filter_currencies[1] = "USD";
-        news_filter_currencies[2] = "EUR";
-        news_filter_titles[0] = "CPI q\\/q";
-        news_filter_titles[1] = "Employment Change q\\/q";
-        news_filter_titles[2] = "Official Cash Rate";
-        news_filter_titles[3] = "RBNZ Monetary Policy Statement";
-        news_filter_titles[4] = "RBNZ Rate Statement";
-        news_filter_titles[5] = "Unemployment Rate";
-        return;
-       }
-
-    if(StringCompare(sym, "EURUSD") == 0)
-       {
-        ArrayResize(news_filter_currencies, 3);
-        ArrayResize(news_filter_titles, 18);
         news_filter_currencies[0] = "EUR";
         news_filter_currencies[1] = "USD";
-        news_filter_currencies[2] = "EUR";
-        news_filter_titles[0] = "Average Hourly Earnings m\\/m";
-        news_filter_titles[1] = "CPI m\\/m";
-        news_filter_titles[2] = "CPI y\\/y";
-        news_filter_titles[3] = "Core CPI m\\/m";
-        news_filter_titles[4] = "Core Retail Sales m\\/m";
-        news_filter_titles[5] = "Empire State Manufacturing Index";
-        news_filter_titles[6] = "Existing Home Sales";
-        news_filter_titles[7] = "FOMC Economic Projections";
-        news_filter_titles[8] = "French Flash Manufacturing PMI";
-        news_filter_titles[9] = "French Flash Services PMI";
-        news_filter_titles[10] = "German Flash Manufacturing PMI";
-        news_filter_titles[11] = "German Flash Services PMI";
-        news_filter_titles[12] = "Industrial Production m\\/m";
-        news_filter_titles[13] = "Non-Farm Employment Change";
-        news_filter_titles[14] = "Retail Sales m\\/m";
-        news_filter_titles[15] = "S&P/CS Composite-20 HPI y\\/y";
-        news_filter_titles[16] = "Treasury Currency Report";
-        news_filter_titles[17] = "Unemployment Rate";
-        return;
-       }
-
-    if(StringCompare(sym, "GBPAUD") == 0)
-       {
-        ArrayResize(news_filter_currencies, 3);
-        ArrayResize(news_filter_titles, 13);
-        news_filter_currencies[0] = "GBP";
-        news_filter_currencies[1] = "USD";
-        news_filter_currencies[2] = "AUD";
-        news_filter_titles[0] = "Asset Purchase Facility";
-        news_filter_titles[1] = "BOE Inflation Letter";
-        news_filter_titles[2] = "BOE Monetary Policy Report";
-        news_filter_titles[3] = "CPI q\\/q";
-        news_filter_titles[4] = "Cash Rate";
-        news_filter_titles[5] = "Employment Change";
-        news_filter_titles[6] = "MPC Asset Purchase Facility Votes";
-        news_filter_titles[7] = "MPC Official Bank Rate Votes";
-        news_filter_titles[8] = "Monetary Policy Summary";
-        news_filter_titles[9] = "Official Bank Rate";
-        news_filter_titles[10] = "RBA Rate Statement";
-        news_filter_titles[11] = "Trimmed Mean CPI q\\/q";
-        news_filter_titles[12] = "Unemployment Rate";
-        return;
-       }
-
-    if(StringCompare(sym, "GBPCAD") == 0)
-       {
-        ArrayResize(news_filter_currencies, 3);
-        ArrayResize(news_filter_titles, 10);
-        news_filter_currencies[0] = "GBP";
-        news_filter_currencies[1] = "USD";
-        news_filter_currencies[2] = "CAD";
-        news_filter_titles[0] = "Asset Purchase Facility";
-        news_filter_titles[1] = "BOE Inflation Letter";
-        news_filter_titles[2] = "BOE Monetary Policy Report";
-        news_filter_titles[3] = "BOC Monetary Policy Report";
-        news_filter_titles[4] = "BOC Rate Statement";
-        news_filter_titles[5] = "MPC Asset Purchase Facility Votes";
-        news_filter_titles[6] = "MPC Official Bank Rate Votes";
-        news_filter_titles[7] = "Monetary Policy Summary";
-        news_filter_titles[8] = "Official Bank Rate";
-        news_filter_titles[9] = "Overnight Rate";
-        return;
-       }
-
-    if(StringCompare(sym, "GBPCHF") == 0)
-       {
-        ArrayResize(news_filter_currencies, 3);
-        ArrayResize(news_filter_titles, 8);
-        news_filter_currencies[0] = "GBP";
-        news_filter_currencies[1] = "USD";
-        news_filter_currencies[2] = "CHF";
-        news_filter_titles[0] = "Asset Purchase Facility";
-        news_filter_titles[1] = "BOE Inflation Letter";
-        news_filter_titles[2] = "BOE Monetary Policy Report";
-        news_filter_titles[3] = "MPC Asset Purchase Facility Votes";
-        news_filter_titles[4] = "Monetary Policy Summary";
-        news_filter_titles[5] = "Official Bank Rate";
-        news_filter_titles[6] = "SNB Monetary Policy Assessment";
-        news_filter_titles[7] = "SNB Policy Rate";
+        news_filter_currencies[2] = "JPY";
+        news_filter_titles[0] = "BOJ Outlook Report";
+        news_filter_titles[1] = "BOJ Policy Rate";
+        news_filter_titles[2] = "German Flash Manufacturing PMI";
+        news_filter_titles[3] = "German Flash Services PMI";
+        news_filter_titles[4] = "Main Refinancing Rate";
+        news_filter_titles[5] = "Monetary Policy Statement";
         return;
        }
 
     if(StringCompare(sym, "GBPJPY") == 0)
        {
         ArrayResize(news_filter_currencies, 3);
-        ArrayResize(news_filter_titles, 10);
+        ArrayResize(news_filter_titles, 13);
         news_filter_currencies[0] = "GBP";
         news_filter_currencies[1] = "USD";
         news_filter_currencies[2] = "JPY";
@@ -470,57 +405,88 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym)
         news_filter_titles[2] = "BOE Monetary Policy Report";
         news_filter_titles[3] = "BOJ Outlook Report";
         news_filter_titles[4] = "BOJ Policy Rate";
-        news_filter_titles[5] = "MPC Asset Purchase Facility Votes";
-        news_filter_titles[6] = "MPC Official Bank Rate Votes";
-        news_filter_titles[7] = "Monetary Policy Statement";
-        news_filter_titles[8] = "Monetary Policy Summary";
-        news_filter_titles[9] = "Official Bank Rate";
+        news_filter_titles[5] = "CPI y\\/y";
+        news_filter_titles[6] = "Flash Manufacturing PMI";
+        news_filter_titles[7] = "Flash Services PMI";
+        news_filter_titles[8] = "MPC Asset Purchase Facility Votes";
+        news_filter_titles[9] = "MPC Official Bank Rate Votes";
+        news_filter_titles[10] = "Monetary Policy Statement";
+        news_filter_titles[11] = "Monetary Policy Summary";
+        news_filter_titles[12] = "Official Bank Rate";
         return;
        }
 
-    if(StringCompare(sym, "GBPNZD") == 0)
+    if(StringCompare(sym, "AUDCAD") == 0)
        {
         ArrayResize(news_filter_currencies, 3);
-        ArrayResize(news_filter_titles, 14);
+        ArrayResize(news_filter_titles, 4);
+        news_filter_currencies[0] = "AUD";
+        news_filter_currencies[1] = "USD";
+        news_filter_currencies[2] = "CAD";
+        news_filter_titles[0] = "CPI q\\/q";
+        news_filter_titles[1] = "Cash Rate";
+        news_filter_titles[2] = "RBA Rate Statement";
+        news_filter_titles[3] = "Trimmed Mean CPI q\\/q";
+        return;
+       }
+
+    if(StringCompare(sym, "NZDJPY") == 0)
+       {
+        ArrayResize(news_filter_currencies, 3);
+        ArrayResize(news_filter_titles, 6);
+        news_filter_currencies[0] = "NZD";
+        news_filter_currencies[1] = "USD";
+        news_filter_currencies[2] = "JPY";
+        news_filter_titles[0] = "BOJ Outlook Report";
+        news_filter_titles[1] = "BOJ Policy Rate";
+        news_filter_titles[2] = "Monetary Policy Statement";
+        news_filter_titles[3] = "Official Cash Rate";
+        news_filter_titles[4] = "RBNZ Monetary Policy Statement";
+        news_filter_titles[5] = "RBNZ Rate Statement";
+        return;
+       }
+
+    if(StringCompare(sym, "GBPCHF") == 0)
+       {
+        ArrayResize(news_filter_currencies, 3);
+        ArrayResize(news_filter_titles, 9);
         news_filter_currencies[0] = "GBP";
         news_filter_currencies[1] = "USD";
-        news_filter_currencies[2] = "NZD";
+        news_filter_currencies[2] = "CHF";
         news_filter_titles[0] = "Asset Purchase Facility";
         news_filter_titles[1] = "BOE Inflation Letter";
         news_filter_titles[2] = "BOE Monetary Policy Report";
-        news_filter_titles[3] = "CPI q\\/q";
-        news_filter_titles[4] = "Current Account";
-        news_filter_titles[5] = "Employment Change q\\/q";
-        news_filter_titles[6] = "MPC Asset Purchase Facility Votes";
-        news_filter_titles[7] = "MPC Official Bank Rate Votes";
-        news_filter_titles[8] = "Monetary Policy Summary";
-        news_filter_titles[9] = "Official Bank Rate";
-        news_filter_titles[10] = "Official Cash Rate";
-        news_filter_titles[11] = "PPI Input m\\/m";
-        news_filter_titles[12] = "RBNZ Monetary Policy Statement";
-        news_filter_titles[13] = "RBNZ Rate Statement";
+        news_filter_titles[3] = "MPC Asset Purchase Facility Votes";
+        news_filter_titles[4] = "MPC Official Bank Rate Votes";
+        news_filter_titles[5] = "Monetary Policy Summary";
+        news_filter_titles[6] = "Official Bank Rate";
+        news_filter_titles[7] = "SNB Monetary Policy Assessment";
+        news_filter_titles[8] = "SNB Policy Rate";
         return;
        }
 
-    if(StringCompare(sym, "GBPUSD") == 0)
+    if(StringCompare(sym, "GBPCAD") == 0)
        {
         ArrayResize(news_filter_currencies, 3);
-        ArrayResize(news_filter_titles, 12);
+        ArrayResize(news_filter_titles, 15);
         news_filter_currencies[0] = "GBP";
         news_filter_currencies[1] = "USD";
-        news_filter_currencies[2] = "USD";
+        news_filter_currencies[2] = "CAD";
         news_filter_titles[0] = "Asset Purchase Facility";
-        news_filter_titles[1] = "Average Hourly Earnings m\\/m";
-        news_filter_titles[2] = "BOE Inflation Letter";
-        news_filter_titles[3] = "BOE Monetary Policy Report";
-        news_filter_titles[4] = "CPI m\\/m";
-        news_filter_titles[5] = "Core CPI m\\/m";
-        news_filter_titles[6] = "FOMC Economic Projections";
-        news_filter_titles[7] = "MPC Asset Purchase Facility Votes";
-        news_filter_titles[8] = "MPC Official Bank Rate Votes";
-        news_filter_titles[9] = "Monetary Policy Summary";
-        news_filter_titles[10] = "Non-Farm Employment Change";
-        news_filter_titles[11] = "Official Bank Rate";
+        news_filter_titles[1] = "BOC Monetary Policy Report";
+        news_filter_titles[2] = "BOC Rate Statement";
+        news_filter_titles[3] = "BOE Inflation Letter";
+        news_filter_titles[4] = "BOE Monetary Policy Report";
+        news_filter_titles[5] = "CPI m\\/m";
+        news_filter_titles[6] = "CPI y\\/y";
+        news_filter_titles[7] = "Employment Change";
+        news_filter_titles[8] = "MPC Asset Purchase Facility Votes";
+        news_filter_titles[9] = "MPC Official Bank Rate Votes";
+        news_filter_titles[10] = "Median CPI y\\/y";
+        news_filter_titles[11] = "Monetary Policy Summary";
+        news_filter_titles[12] = "Official Bank Rate";
+        news_filter_titles[13] = "Overnight Rate";
+        news_filter_titles[14] = "Trimmed CPI y\\/y";
         return;
        }
 
@@ -537,89 +503,273 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym)
         return;
        }
 
-    if(StringCompare(sym, "NZDCHF") == 0)
+    if(StringCompare(sym, "USDJPY") == 0)
        {
         ArrayResize(news_filter_currencies, 3);
-        ArrayResize(news_filter_titles, 1);
-        news_filter_currencies[0] = "NZD";
-        news_filter_currencies[1] = "USD";
-        news_filter_currencies[2] = "CHF";
-        news_filter_titles[0] = "RBNZ Monetary Policy Statement";
-        return;
-       }
-
-    if(StringCompare(sym, "NZDJPY") == 0)
-       {
-        ArrayResize(news_filter_currencies, 3);
-        ArrayResize(news_filter_titles, 4);
-        news_filter_currencies[0] = "NZD";
+        ArrayResize(news_filter_titles, 23);
+        news_filter_currencies[0] = "USD";
         news_filter_currencies[1] = "USD";
         news_filter_currencies[2] = "JPY";
-        news_filter_titles[0] = "BOJ Policy Rate";
-        news_filter_titles[1] = "Official Cash Rate";
-        news_filter_titles[2] = "RBNZ Monetary Policy Statement";
-        news_filter_titles[3] = "RBNZ Rate Statement";
-        return;
-       }
-
-    if(StringCompare(sym, "NZDUSD") == 0)
-       {
-        ArrayResize(news_filter_currencies, 3);
-        ArrayResize(news_filter_titles, 1);
-        news_filter_currencies[0] = "NZD";
-        news_filter_currencies[1] = "USD";
-        news_filter_currencies[2] = "USD";
-        news_filter_titles[0] = "RBNZ Monetary Policy Statement";
+        news_filter_titles[0] = "Advance GDP Price Index q\\/q";
+        news_filter_titles[1] = "Advance GDP q\\/q";
+        news_filter_titles[2] = "Average Hourly Earnings m\\/m";
+        news_filter_titles[3] = "BOJ Outlook Report";
+        news_filter_titles[4] = "BOJ Policy Rate";
+        news_filter_titles[5] = "CPI m\\/m";
+        news_filter_titles[6] = "CPI y\\/y";
+        news_filter_titles[7] = "Core CPI m\\/m";
+        news_filter_titles[8] = "Core PPI m\\/m";
+        news_filter_titles[9] = "Core Retail Sales m\\/m";
+        news_filter_titles[10] = "Empire State Manufacturing Index";
+        news_filter_titles[11] = "FOMC Economic Projections";
+        news_filter_titles[12] = "FOMC Statement";
+        news_filter_titles[13] = "Federal Funds Rate";
+        news_filter_titles[14] = "ISM Manufacturing PMI";
+        news_filter_titles[15] = "ISM Manufacturing Prices";
+        news_filter_titles[16] = "ISM Services PMI";
+        news_filter_titles[17] = "JOLTS Job Openings";
+        news_filter_titles[18] = "Monetary Policy Statement";
+        news_filter_titles[19] = "Non-Farm Employment Change";
+        news_filter_titles[20] = "PPI m\\/m";
+        news_filter_titles[21] = "Retail Sales m\\/m";
+        news_filter_titles[22] = "Unemployment Rate";
         return;
        }
 
     if(StringCompare(sym, "USDCAD") == 0)
        {
         ArrayResize(news_filter_currencies, 3);
-        ArrayResize(news_filter_titles, 6);
-        news_filter_currencies[0] = "CAD";
+        ArrayResize(news_filter_titles, 12);
+        news_filter_currencies[0] = "USD";
         news_filter_currencies[1] = "USD";
-        news_filter_currencies[2] = "USD";
-        news_filter_titles[0] = "BOC Monetary Policy Report";
-        news_filter_titles[1] = "BOC Rate Statement";
-        news_filter_titles[2] = "CPI y\\/y";
-        news_filter_titles[3] = "Core CPI m\\/m";
-        news_filter_titles[4] = "FOMC Economic Projections";
-        news_filter_titles[5] = "Overnight Rate";
+        news_filter_currencies[2] = "CAD";
+        news_filter_titles[0] = "Average Hourly Earnings m\\/m";
+        news_filter_titles[1] = "BOC Monetary Policy Report";
+        news_filter_titles[2] = "BOC Rate Statement";
+        news_filter_titles[3] = "CPI m\\/m";
+        news_filter_titles[4] = "CPI y\\/y";
+        news_filter_titles[5] = "Core CPI m\\/m";
+        news_filter_titles[6] = "Employment Change";
+        news_filter_titles[7] = "FOMC Economic Projections";
+        news_filter_titles[8] = "FOMC Statement";
+        news_filter_titles[9] = "Federal Funds Rate";
+        news_filter_titles[10] = "Non-Farm Employment Change";
+        news_filter_titles[11] = "Overnight Rate";
         return;
        }
 
     if(StringCompare(sym, "USDCHF") == 0)
        {
         ArrayResize(news_filter_currencies, 3);
-        ArrayResize(news_filter_titles, 2);
-        news_filter_currencies[0] = "CHF";
+        ArrayResize(news_filter_titles, 8);
+        news_filter_currencies[0] = "USD";
         news_filter_currencies[1] = "USD";
-        news_filter_currencies[2] = "USD";
-        news_filter_titles[0] = "SNB Monetary Policy Assessment";
-        news_filter_titles[1] = "SNB Policy Rate";
+        news_filter_currencies[2] = "CHF";
+        news_filter_titles[0] = "Average Hourly Earnings m\\/m";
+        news_filter_titles[1] = "CPI m\\/m";
+        news_filter_titles[2] = "CPI y\\/y";
+        news_filter_titles[3] = "Core CPI m\\/m";
+        news_filter_titles[4] = "FOMC Economic Projections";
+        news_filter_titles[5] = "Non-Farm Employment Change";
+        news_filter_titles[6] = "SNB Monetary Policy Assessment";
+        news_filter_titles[7] = "SNB Policy Rate";
         return;
        }
 
-    if(StringCompare(sym, "USDJPY") == 0)
+    if(StringCompare(sym, "AUDCHF") == 0)
+       {
+        ArrayResize(news_filter_currencies, 3);
+        ArrayResize(news_filter_titles, 4);
+        news_filter_currencies[0] = "AUD";
+        news_filter_currencies[1] = "USD";
+        news_filter_currencies[2] = "CHF";
+        news_filter_titles[0] = "Cash Rate";
+        news_filter_titles[1] = "RBA Rate Statement";
+        news_filter_titles[2] = "SNB Monetary Policy Assessment";
+        news_filter_titles[3] = "SNB Policy Rate";
+        return;
+       }
+
+    if(StringCompare(sym, "EURGBP") == 0)
+       {
+        ArrayResize(news_filter_currencies, 3);
+        ArrayResize(news_filter_titles, 7);
+        news_filter_currencies[0] = "EUR";
+        news_filter_currencies[1] = "USD";
+        news_filter_currencies[2] = "GBP";
+        news_filter_titles[0] = "Asset Purchase Facility";
+        news_filter_titles[1] = "BOE Inflation Letter";
+        news_filter_titles[2] = "BOE Monetary Policy Report";
+        news_filter_titles[3] = "MPC Asset Purchase Facility Votes";
+        news_filter_titles[4] = "MPC Official Bank Rate Votes";
+        news_filter_titles[5] = "Monetary Policy Summary";
+        news_filter_titles[6] = "Official Bank Rate";
+        return;
+       }
+
+    if(StringCompare(sym, "GBPNZD") == 0)
+       {
+        ArrayResize(news_filter_currencies, 3);
+        ArrayResize(news_filter_titles, 16);
+        news_filter_currencies[0] = "GBP";
+        news_filter_currencies[1] = "USD";
+        news_filter_currencies[2] = "NZD";
+        news_filter_titles[0] = "Asset Purchase Facility";
+        news_filter_titles[1] = "BOE Inflation Letter";
+        news_filter_titles[2] = "BOE Monetary Policy Report";
+        news_filter_titles[3] = "CPI q\\/q";
+        news_filter_titles[4] = "CPI y\\/y";
+        news_filter_titles[5] = "Employment Change q\\/q";
+        news_filter_titles[6] = "Flash Manufacturing PMI";
+        news_filter_titles[7] = "Flash Services PMI";
+        news_filter_titles[8] = "GDP q\\/q";
+        news_filter_titles[9] = "MPC Asset Purchase Facility Votes";
+        news_filter_titles[10] = "MPC Official Bank Rate Votes";
+        news_filter_titles[11] = "Monetary Policy Summary";
+        news_filter_titles[12] = "Official Bank Rate";
+        news_filter_titles[13] = "Official Cash Rate";
+        news_filter_titles[14] = "RBNZ Monetary Policy Statement";
+        news_filter_titles[15] = "RBNZ Rate Statement";
+        return;
+       }
+
+    if(StringCompare(sym, "EURNZD") == 0)
+       {
+        ArrayResize(news_filter_currencies, 3);
+        ArrayResize(news_filter_titles, 8);
+        news_filter_currencies[0] = "EUR";
+        news_filter_currencies[1] = "USD";
+        news_filter_currencies[2] = "NZD";
+        news_filter_titles[0] = "CPI q\\/q";
+        news_filter_titles[1] = "Employment Change q\\/q";
+        news_filter_titles[2] = "Main Refinancing Rate";
+        news_filter_titles[3] = "Monetary Policy Statement";
+        news_filter_titles[4] = "Official Cash Rate";
+        news_filter_titles[5] = "RBNZ Monetary Policy Statement";
+        news_filter_titles[6] = "RBNZ Rate Statement";
+        news_filter_titles[7] = "Unemployment Rate";
+        return;
+       }
+
+    if(StringCompare(sym, "NZDUSD") == 0)
        {
         ArrayResize(news_filter_currencies, 3);
         ArrayResize(news_filter_titles, 9);
-        news_filter_currencies[0] = "JPY";
+        news_filter_currencies[0] = "NZD";
         news_filter_currencies[1] = "USD";
         news_filter_currencies[2] = "USD";
         news_filter_titles[0] = "Average Hourly Earnings m\\/m";
-        news_filter_titles[1] = "BOJ Policy Rate";
-        news_filter_titles[2] = "CPI m\\/m";
-        news_filter_titles[3] = "CPI y\\/y";
-        news_filter_titles[4] = "Core CPI m\\/m";
-        news_filter_titles[5] = "FOMC Economic Projections";
-        news_filter_titles[6] = "Monetary Policy Statement";
-        news_filter_titles[7] = "Non-Farm Employment Change";
-        news_filter_titles[8] = "Unemployment Rate";
+        news_filter_titles[1] = "CPI m\\/m";
+        news_filter_titles[2] = "CPI y\\/y";
+        news_filter_titles[3] = "Core CPI m\\/m";
+        news_filter_titles[4] = "FOMC Economic Projections";
+        news_filter_titles[5] = "Non-Farm Employment Change";
+        news_filter_titles[6] = "Official Cash Rate";
+        news_filter_titles[7] = "RBNZ Monetary Policy Statement";
+        news_filter_titles[8] = "RBNZ Rate Statement";
         return;
        }
 
+    if(StringCompare(sym, "EURUSD") == 0)
+       {
+        ArrayResize(news_filter_currencies, 3);
+        ArrayResize(news_filter_titles, 24);
+        news_filter_currencies[0] = "EUR";
+        news_filter_currencies[1] = "USD";
+        news_filter_currencies[2] = "USD";
+        news_filter_titles[0] = "Average Hourly Earnings m\\/m";
+        news_filter_titles[1] = "CPI m\\/m";
+        news_filter_titles[2] = "CPI y\\/y";
+        news_filter_titles[3] = "Core CPI m\\/m";
+        news_filter_titles[4] = "Core Retail Sales m\\/m";
+        news_filter_titles[5] = "Empire State Manufacturing Index";
+        news_filter_titles[6] = "Existing Home Sales";
+        news_filter_titles[7] = "FOMC Economic Projections";
+        news_filter_titles[8] = "FOMC Statement";
+        news_filter_titles[9] = "Federal Funds Rate";
+        news_filter_titles[10] = "Flash Manufacturing PMI";
+        news_filter_titles[11] = "Flash Services PMI";
+        news_filter_titles[12] = "French Flash Manufacturing PMI";
+        news_filter_titles[13] = "French Flash Services PMI";
+        news_filter_titles[14] = "German Flash Manufacturing PMI";
+        news_filter_titles[15] = "German Flash Services PMI";
+        news_filter_titles[16] = "Industrial Production m\\/m";
+        news_filter_titles[17] = "Main Refinancing Rate";
+        news_filter_titles[18] = "Monetary Policy Statement";
+        news_filter_titles[19] = "Non-Farm Employment Change";
+        news_filter_titles[20] = "Retail Sales m\\/m";
+        news_filter_titles[21] = "S&P\\/CS Composite-20 HPI y";
+        news_filter_titles[22] = "Treasury Currency Report";
+        news_filter_titles[23] = "Unemployment Rate";
+        return;
+       }
+
+    if(StringCompare(sym, "AUDUSD") == 0)
+       {
+        ArrayResize(news_filter_currencies, 3);
+        ArrayResize(news_filter_titles, 19);
+        news_filter_currencies[0] = "AUD";
+        news_filter_currencies[1] = "USD";
+        news_filter_currencies[2] = "USD";
+        news_filter_titles[0] = "Average Hourly Earnings m\\/m";
+        news_filter_titles[1] = "Building Permits";
+        news_filter_titles[2] = "CPI m\\/m";
+        news_filter_titles[3] = "CPI q\\/q";
+        news_filter_titles[4] = "CPI y\\/y";
+        news_filter_titles[5] = "Cash Rate";
+        news_filter_titles[6] = "Core CPI m\\/m";
+        news_filter_titles[7] = "Existing Home Sales";
+        news_filter_titles[8] = "FOMC Economic Projections";
+        news_filter_titles[9] = "FOMC Statement";
+        news_filter_titles[10] = "Federal Funds Rate";
+        news_filter_titles[11] = "Flash Manufacturing PMI";
+        news_filter_titles[12] = "Flash Services PMI";
+        news_filter_titles[13] = "Non-Farm Employment Change";
+        news_filter_titles[14] = "Philly Fed Manufacturing Index";
+        news_filter_titles[15] = "RBA Rate Statement";
+        news_filter_titles[16] = "Treasury Currency Report";
+        news_filter_titles[17] = "Trimmed Mean CPI q\\/q";
+        news_filter_titles[18] = "Unemployment Rate";
+        return;
+       }
+
+    if(StringCompare(sym, "CADJPY") == 0)
+       {
+        ArrayResize(news_filter_currencies, 3);
+        ArrayResize(news_filter_titles, 8);
+        news_filter_currencies[0] = "CAD";
+        news_filter_currencies[1] = "USD";
+        news_filter_currencies[2] = "JPY";
+        news_filter_titles[0] = "BOC Monetary Policy Report";
+        news_filter_titles[1] = "BOC Rate Statement";
+        news_filter_titles[2] = "BOJ Outlook Report";
+        news_filter_titles[3] = "BOJ Policy Rate";
+        news_filter_titles[4] = "Employment Change";
+        news_filter_titles[5] = "Monetary Policy Statement";
+        news_filter_titles[6] = "Overnight Rate";
+        news_filter_titles[7] = "Unemployment Rate";
+        return;
+       }
+
+    if(StringCompare(sym, "EURAUD") == 0)
+       {
+        ArrayResize(news_filter_currencies, 3);
+        ArrayResize(news_filter_titles, 10);
+        news_filter_currencies[0] = "EUR";
+        news_filter_currencies[1] = "USD";
+        news_filter_currencies[2] = "AUD";
+        news_filter_titles[0] = "CPI q\\/q";
+        news_filter_titles[1] = "CPI y\\/y";
+        news_filter_titles[2] = "Cash Rate";
+        news_filter_titles[3] = "Employment Change";
+        news_filter_titles[4] = "Main Refinancing Rate";
+        news_filter_titles[5] = "Monetary Policy Statement";
+        news_filter_titles[6] = "RBA Rate Statement";
+        news_filter_titles[7] = "Trimmed Mean CPI q\\/q";
+        news_filter_titles[8] = "Unemployment Rate";
+        news_filter_titles[9] = "Wage Price Index q\\/q";
+        return;
+       }
 
     Alert("No news filter was found for ", sym);
    }
