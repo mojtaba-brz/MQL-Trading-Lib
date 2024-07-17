@@ -51,16 +51,33 @@ void ForexFactoryNewsHandlerClass::update_news()
    {
     char data[], server_resp[];
     string header, data_string = "";
+    int http_code = 0;
 
-    int http_code = WebRequest("GET", "https://nfs.faireconomy.media/ff_calendar_thisweek.json", NULL, 20, data, server_resp, header);
-    if(http_code < 0)
+    while(1)
        {
-        Alert("Please add \"https://nfs.faireconomy.media/ff_calendar_thisweek.json\"\nto Tools > Options > Expert Advisors > \nAllow WebRequestes for listed URL and don't forget to enable it.");
+        http_code = WebRequest("GET", "https://nfs.faireconomy.media/ff_calendar_thisweek.json", NULL, 20, data, server_resp, header);
+        if(http_code < 0)
+           {
+            Alert("Please add \"https://nfs.faireconomy.media/ff_calendar_thisweek.json\"\nto Tools > Options > Expert Advisors > \nAllow WebRequestes for listed URL and don't forget to enable it.");
+            return;
+           }
+        if(http_code != 200)
+           {
+            Print("Forex Factory Request Retry...");
+            Sleep(500);
+           }
+        else
+           {
+            num_of_news = parse_ff_jason_char_array(server_resp, ArraySize(server_resp), forex_factory_news);
+            if(num_of_news > 0)
+              {
+                break;
+              }
+            Print("Forex Factory Has Returned No News...");
+            Sleep(500);
+           }
        }
-    else
-       {
-        num_of_news = parse_ff_jason_char_array(server_resp, ArraySize(server_resp), forex_factory_news);
-       }
+
    }
 
 //+------------------------------------------------------------------+
@@ -92,8 +109,8 @@ void ForexFactoryNewsHandlerClass::filter_the_news()
     while(ArraySize(forex_factory_news) > i)
        {
         if((StringCompare(forex_factory_news[i].currency, news_filter_currencies[0]) == 0 ||
-           StringCompare(forex_factory_news[i].currency, news_filter_currencies[1]) == 0 ||
-           StringCompare(forex_factory_news[i].currency, news_filter_currencies[2]) == 0) &&
+            StringCompare(forex_factory_news[i].currency, news_filter_currencies[1]) == 0 ||
+            StringCompare(forex_factory_news[i].currency, news_filter_currencies[2]) == 0) &&
            (forex_factory_news[i].impact == ENUM_NEWS_IMPACT_RED || forex_factory_news[i].impact == ENUM_NEWS_IMPACT_MEDIUM))
            {
             int j = 0;
