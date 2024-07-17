@@ -127,7 +127,7 @@ bool ForexFactoryNewsHandlerClass::in_filtered_news_zone(double time_margin_left
         datetime current_time = TimeCurrent();
         datetime server_offset = TimeGMT() - TimeCurrent();
         news_date = StructToTime(forex_factory_news[i].datatime) - server_offset;
-        if(news_date <= (current_time + time_margin_right_s) && news_date >= (current_time - time_margin_left_s))
+        if(current_time <= (news_date + time_margin_right_s) && current_time >= (news_date - time_margin_left_s))
            {
             return true;
            }
