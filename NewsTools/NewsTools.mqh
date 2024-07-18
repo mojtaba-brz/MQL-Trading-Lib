@@ -18,6 +18,7 @@ struct ForexFactoryNews
    {
     string            title, currency, date, impact_str, forecast, previous;
     MqlDateTime       datatime;
+    datetime          release_time;
     NewsImpact        impact;
    };
 
@@ -38,7 +39,7 @@ public:
                     ~ForexFactoryNewsHandlerClass() {}
     void              update_news();
     bool              in_news_zone(string currency, NewsImpact impact, double time_margin_left_s, double time_margin_right_s);
-    bool              in_filtered_news_zone(double time_margin_left_s, double time_margin_right_s, datetime &news_date);
+    bool              in_filtered_news_zone(double time_margin_left_s, double time_margin_right_s, datetime &news_date, datetime current_time);
     void              print_news(int index);
     void             update_news_filter_with_symbol(string sym);
     void             filter_the_news();
@@ -137,13 +138,11 @@ void ForexFactoryNewsHandlerClass::filter_the_news()
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-bool ForexFactoryNewsHandlerClass::in_filtered_news_zone(double time_margin_left_s, double time_margin_right_s, datetime &news_date)
+bool ForexFactoryNewsHandlerClass::in_filtered_news_zone(double time_margin_left_s, double time_margin_right_s, datetime &news_date, datetime current_time)
    {
     for(int i = 0; i < ArraySize(forex_factory_news); i++)
        {
-        datetime current_time = TimeCurrent();
-        datetime server_offset = TimeGMT() - TimeCurrent();
-        news_date = StructToTime(forex_factory_news[i].datatime) - server_offset;
+        news_date = forex_factory_news[i].release_time;
         if(current_time <= (news_date + time_margin_right_s) && current_time >= (news_date - time_margin_left_s))
            {
             return true;
@@ -209,10 +208,16 @@ ForexFactoryNews parse_single_ff_news_string(string news)
     StringSplit(ffn.date, 'T', news_parts);
     StringSplit(news_parts[1], '-', news_parts_2);
     StringSplit(news_parts_2[0], ':', news_parts);
-    ffn.datatime.hour = (int)StringToInteger(news_parts[0]) + 4;
+    
+    ffn.datatime.hour = (int)StringToInteger(news_parts[0]);
     ffn.datatime.min = (int)StringToInteger(news_parts[1]);
     ffn.datatime.sec = (int)StringToInteger(news_parts[2]);
-
+    ffn.release_time = StructToTime(ffn.datatime);
+    datetime server_offset = TimeGMT() - TimeTradeServer();
+    ffn.release_time -= server_offset;
+    ffn.release_time += 4 * 3600;
+    TimeToStruct(ffn.release_time, ffn.datatime);
+    
     ffn.impact = ffn.impact_str == "Holiday" ? ENUM_NEWS_IMPACT_HOLIDAY :
                  ffn.impact_str == "High"    ? ENUM_NEWS_IMPACT_RED    :
                  ffn.impact_str == "Medium"  ? ENUM_NEWS_IMPACT_MEDIUM : ENUM_NEWS_IMPACT_GREY;
