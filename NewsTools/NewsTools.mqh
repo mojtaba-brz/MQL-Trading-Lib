@@ -112,7 +112,7 @@ void ForexFactoryNewsHandlerClass::filter_the_news()
         if((StringCompare(forex_factory_news[i].currency, news_filter_currencies[0]) == 0 ||
             StringCompare(forex_factory_news[i].currency, news_filter_currencies[1]) == 0 ||
             StringCompare(forex_factory_news[i].currency, news_filter_currencies[2]) == 0) &&
-           (forex_factory_news[i].impact == ENUM_NEWS_IMPACT_RED || forex_factory_news[i].impact == ENUM_NEWS_IMPACT_MEDIUM))
+           (forex_factory_news[i].impact == ENUM_NEWS_IMPACT_RED))
            {
             int j = 0;
             for(j = 0; j < ArraySize(news_filter_titles); j++)
