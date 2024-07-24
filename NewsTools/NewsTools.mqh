@@ -142,9 +142,10 @@ bool ForexFactoryNewsHandlerClass::in_filtered_news_zone(double time_margin_left
    {
     for(int i = 0; i < ArraySize(forex_factory_news); i++)
        {
-        news_date = forex_factory_news[i].release_time;
-        if(current_time <= (news_date + time_margin_right_s) && current_time >= (news_date - time_margin_left_s))
+        datetime news_date_temp = forex_factory_news[i].release_time;
+        if(current_time <= (news_date_temp + time_margin_right_s) && current_time >= (news_date_temp - time_margin_left_s))
            {
+            news_date = news_date_temp;
             return true;
            }
        }
