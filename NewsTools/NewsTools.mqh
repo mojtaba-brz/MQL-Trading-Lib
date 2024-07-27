@@ -777,6 +777,39 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym)
         return;
        }
 
+    if(StringCompare(sym, "XAUUSD") == 0)
+       {
+        ArrayResize(news_filter_currencies, 3);
+        ArrayResize(news_filter_titles, 23);
+        news_filter_currencies[0] = "XAU";
+        news_filter_currencies[1] = "USD";
+        news_filter_currencies[2] = "USD";
+        news_filter_titles[0] = "Average Hourly Earnings m\\/m";
+        news_filter_titles[1] = "CPI m\\/m";
+        news_filter_titles[2] = "CPI y\\/y";
+        news_filter_titles[3] = "Core CPI m\\/m";
+        news_filter_titles[4] = "Core PPI m\\/m";
+        news_filter_titles[5] = "Core Retail Sales m\\/m";
+        news_filter_titles[6] = "Empire State Manufacturing Index";
+        news_filter_titles[7] = "Employment Cost Index q\\/q";
+        news_filter_titles[8] = "FOMC Economic Projections";
+        news_filter_titles[9] = "FOMC Statement";
+        news_filter_titles[10] = "Fed Announcement";
+        news_filter_titles[11] = "Federal Funds Rate";
+        news_filter_titles[12] = "Flash Manufacturing PMI";
+        news_filter_titles[13] = "Flash Services PMI";
+        news_filter_titles[14] = "ISM Manufacturing PMI";
+        news_filter_titles[15] = "ISM Services PMI";
+        news_filter_titles[16] = "JOLTS Job Openings";
+        news_filter_titles[17] = "New Home Sales";
+        news_filter_titles[18] = "Non-Farm Employment Change";
+        news_filter_titles[19] = "PPI m/m";
+        news_filter_titles[20] = "Prelim GDP q/q";
+        news_filter_titles[21] = "Retail Sales m/m";
+        news_filter_titles[22] = "Unemployment Claims";
+        return;
+       }
+
     Alert("No news filter was found for ", sym);
    }
 //+------------------------------------------------------------------+

@@ -144,9 +144,21 @@ void manage_the_trailing_sl(long ticket, double sl_diff, double min_profit_of_ts
 double get_trade_volume_based_on_risk_percent(double sl_diff, double _risk_percent = 2, string sym = NULL)
    {
     double balance = AccountInfoDouble(ACCOUNT_BALANCE);
-
-    double lot = (balance * _risk_percent * 0.01) /
-                 (100000 * sl_diff * get_currency_base_in_balance_currency(sym));
+    double lot;
+    
+    if(sym == NULL) sym = _Symbol;
+    
+    if(sym[0] == 'X')
+    {
+        lot = (balance * _risk_percent * 0.01) /
+                 (100 * sl_diff * get_currency_base_in_balance_currency(sym));  
+    
+    }
+    else
+      {
+        lot = (balance * _risk_percent * 0.01) /
+                 (100000 * sl_diff * get_currency_base_in_balance_currency(sym));       
+      }
 
     lot = MathMin(lot, SymbolInfoDouble(sym, SYMBOL_VOLUME_MAX));
     lot = MathMin(lot, (balance / 100000) * 50);
