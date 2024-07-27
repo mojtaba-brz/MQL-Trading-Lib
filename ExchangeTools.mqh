@@ -130,7 +130,8 @@ string all_supported_symbols[] = {"AUDCAD",
                                   "NZDUSD",
                                   "USDCAD",
                                   "USDCHF",
-                                  "USDJPY"
+                                  "USDJPY",
+                                  "XAUUSD"
                                  };
 
 string required_symbols[] = { "AUDUSD",
