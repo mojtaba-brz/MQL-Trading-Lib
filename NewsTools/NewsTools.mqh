@@ -65,7 +65,7 @@ void ForexFactoryNewsHandlerClass::update_news()
            }
         if(http_code != 200)
            {
-            Print("Forex Factory Request Retry...");
+            Print("Forex Factory Request Retry...", " HTTP code : ", http_code);
             Sleep(500);
            }
         else
