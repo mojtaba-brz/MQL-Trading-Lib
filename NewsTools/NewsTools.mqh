@@ -36,7 +36,7 @@ private:
 
 public:
     ForexFactoryNews  forex_factory_news[];
-                     ForexFactoryNewsHandlerClass() {update_news();}
+                     ForexFactoryNewsHandlerClass() {}
                     ~ForexFactoryNewsHandlerClass() {}
     void              update_news();
     bool              in_news_zone(string currency, NewsImpact impact, double time_margin_left_s, double time_margin_right_s);
