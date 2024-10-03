@@ -54,10 +54,13 @@ void ForexFactoryNewsHandlerClass::update_news()
     char data[], server_resp[];
     string header, data_string = "";
     int http_code = 0;
-
+    bool news_are_already_abailable = read_last_news_file_if_it_is_available(server_resp);
+    
     while(1)
        {
-        http_code = WebRequest("GET", "https://nfs.faireconomy.media/ff_calendar_thisweek.json", NULL, 20, data, server_resp, header);
+        http_code = news_are_already_abailable ?
+                    200 :
+                    WebRequest("GET", "https://nfs.faireconomy.media/ff_calendar_thisweek.json", NULL, 20, data, server_resp, header);
         if(http_code < 0)
            {
             Alert("Please add \"https://nfs.faireconomy.media/ff_calendar_thisweek.json\"\nto Tools > Options > Expert Advisors > \nAllow WebRequestes for listed URL and don't forget to enable it.");
@@ -76,13 +79,17 @@ void ForexFactoryNewsHandlerClass::update_news()
             num_of_news = parse_ff_jason_char_array(server_resp, ArraySize(server_resp), forex_factory_news);
             if(num_of_news > 0)
                {
-                break;
+                if(!news_are_already_abailable)
+                   {
+                    save_news_json_file(server_resp);
+                   }
+
+                return;
                }
             Print("Forex Factory Has Returned No News...");
             Sleep(500);
            }
        }
-
    }
 
 //+------------------------------------------------------------------+
@@ -220,6 +227,71 @@ ForexFactoryNews parse_single_ff_news_string(string news)
                  ffn.impact_str == "Medium"  ? ENUM_NEWS_IMPACT_MEDIUM : ENUM_NEWS_IMPACT_GREY;
 
     return ffn;
+   }
+
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
+bool read_last_news_file_if_it_is_available(char &server_resp[])
+   {
+    string last_datime_str = TimeToString(get_last_date_time_of_week()),
+           last_day_and_time[];
+    StringSplit(last_datime_str, ' ', last_day_and_time);
+    string file_name = "downloaded_news_file_" + last_day_and_time[0] + ".txt";
+    int file_handle = FileOpen(file_name, FILE_READ | FILE_TXT);
+    if(file_handle < 0)
+       {
+        Print("News was not read from file : " + file_name);
+        return false;
+       }
+    StringToCharArray(FileReadString(file_handle), server_resp);
+    FileClose(file_handle);
+    return true;
+   }
+
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
+void save_news_json_file(char &server_resp[])
+   {
+    string last_datime_str = TimeToString(get_last_date_time_of_week()),
+           last_day_and_time[];
+    StringSplit(last_datime_str, ' ', last_day_and_time);
+    string file_name = "downloaded_news_file_" + last_day_and_time[0] + ".txt";
+    int file_handle = FileOpen(file_name, FILE_WRITE | FILE_TXT);
+    if(file_handle < 0)
+       {
+        Print("News was not saved in file : " + file_name);
+        return;
+       }
+    string file_txt = CharArrayToString(server_resp);
+    FileWriteString(file_handle, file_txt);
+    FileClose(file_handle);
+   }
+
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
+datetime get_last_date_time_of_week()
+   {
+// Get the current datetime
+    datetime current_time = TimeCurrent();
+    MqlDateTime time_struct;
+    TimeToStruct(current_time, time_struct);
+
+// Calculate the number of days to add to get to the end of the week (Saturday)
+    int days_to_add = 6 - time_struct.day_of_week;
+    datetime lastDateTimeOfWeek = current_time + days_to_add * 86400; // 86400 seconds in a day
+
+// Set the time to the end of the day (23:59:59)
+    TimeToStruct(lastDateTimeOfWeek, time_struct);
+    time_struct.hour = 23;
+    time_struct.min = 59;
+    time_struct.sec = 59;
+
+    lastDateTimeOfWeek = StructToTime(time_struct);
+
+    return lastDateTimeOfWeek;
    }
 
 //+------------------------------------------------------------------+
