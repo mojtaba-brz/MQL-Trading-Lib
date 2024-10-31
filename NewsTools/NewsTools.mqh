@@ -40,7 +40,7 @@ public:
                     ~ForexFactoryNewsHandlerClass() {}
     void              update_news();
     bool              in_news_zone(string currency, NewsImpact impact, double time_margin_left_s, double time_margin_right_s);
-    bool              in_filtered_news_zone(double time_margin_left_s, double time_margin_right_s, datetime &news_date, datetime current_time);
+    bool              in_filtered_news_zone(int time_margin_left_s, int time_margin_right_s, datetime &news_date, datetime current_time);
     void              print_news(int index);
     void             update_news_filter_with_symbol(string sym);
     void             filter_the_news();
@@ -141,7 +141,7 @@ void ForexFactoryNewsHandlerClass::filter_the_news()
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-bool ForexFactoryNewsHandlerClass::in_filtered_news_zone(double time_margin_left_s, double time_margin_right_s, datetime &news_date, datetime current_time)
+bool ForexFactoryNewsHandlerClass::in_filtered_news_zone(int time_margin_left_s, int time_margin_right_s, datetime &news_date, datetime current_time)
    {
     for(int i = 0; i < ArraySize(forex_factory_news); i++)
        {
