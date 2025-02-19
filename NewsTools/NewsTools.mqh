@@ -219,7 +219,8 @@ ForexFactoryNews parse_single_ff_news_string(string news)
     ffn.release_time = StructToTime(ffn.datatime);
     datetime server_offset = TimeGMT() - TimeTradeServer();
     ffn.release_time -= server_offset;
-    ffn.release_time += 4 * 3600;
+    StringSplit(news_parts_2[1], ':', news_parts);
+    ffn.release_time += (int)StringToInteger(news_parts[0]) * 3600;
     TimeToStruct(ffn.release_time, ffn.datatime);
 
     ffn.impact = ffn.impact_str == "Holiday" ? ENUM_NEWS_IMPACT_HOLIDAY :
