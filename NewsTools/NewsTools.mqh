@@ -298,6 +298,10 @@ datetime get_last_date_time_of_week()
 //+------------------------------------------------------------------+
 void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bool alert_if_no_filter_exists)
    {
+
+    ArrayFree(news_filter_currencies);
+    ArrayFree(news_filter_titles);
+    ArrayFree(news_filter_impact);
     if(StringCompare(sym, "AUDCHF") == 0)
        {
         ArrayResize(news_filter_currencies, 1);
