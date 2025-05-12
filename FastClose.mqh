@@ -28,7 +28,7 @@ void close_all_orders(string sym = NULL, long magic_number = 0)
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-void close_all_positions(string sym = NULL, long magic_number = 0)
+void close_all_positions(string sym = NULL, long magic_number = 0, int pos_type = -1)
    {
     CTrade trade();
     trade.SetAsyncMode(true);
@@ -39,7 +39,11 @@ void close_all_positions(string sym = NULL, long magic_number = 0)
         if(PositionSelectByTicket(pos_ticket) &&
            (sym == NULL || (PositionGetString(POSITION_SYMBOL) == sym)) &&
            (magic_number == 0 || (magic_number == PositionGetInteger(POSITION_MAGIC))))
-            trade.PositionClose(pos_ticket);
+           {
+            if(pos_type < 0 ||
+               (pos_type >= 0 && PositionGetInteger(POSITION_TYPE) == pos_type))
+                trade.PositionClose(pos_ticket);
+           }
        }
    }
 //+------------------------------------------------------------------+
