@@ -33,12 +33,16 @@ private:
     string            news_filter_currencies[],
                       news_filter_titles[];
     NewsImpact        news_filter_impact[];
+    datetime          _last_ffn_request_time;
 
 public:
     ForexFactoryNews  forex_factory_news[];
-                     ForexFactoryNewsHandlerClass() {}
+                     ForexFactoryNewsHandlerClass()
+       {
+        _last_ffn_request_time = 0;
+       }
                     ~ForexFactoryNewsHandlerClass() {}
-    void              update_news();
+    bool              update_news();
     bool              in_news_zone(string currency, NewsImpact impact, double time_margin_left_s, double time_margin_right_s);
     bool              in_filtered_news_zone(int time_margin_left_s, int time_margin_right_s, datetime &news_date, datetime current_time);
     void              print_news(int index);
@@ -49,47 +53,47 @@ public:
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-void ForexFactoryNewsHandlerClass::update_news()
+bool ForexFactoryNewsHandlerClass::update_news()
    {
     char data[], server_resp[];
     string header, data_string = "";
     int http_code = 0;
     bool news_are_already_abailable = read_last_news_file_if_it_is_available(server_resp);
-    
-    while(1)
+    datetime current_server_time = TimeTradeServer();
+
+    if(current_server_time > (_last_ffn_request_time + 360 * 1000)) // Last time + 6min to avoid request rejections by FF server
        {
         http_code = news_are_already_abailable ?
                     200 :
                     WebRequest("GET", "https://nfs.faireconomy.media/ff_calendar_thisweek.json", NULL, 20, data, server_resp, header);
-        if(http_code < 0)
-           {
-            Alert("Please add \"https://nfs.faireconomy.media/ff_calendar_thisweek.json\"\nto Tools > Options > Expert Advisors > \nAllow WebRequestes for listed URL and don't forget to enable it.");
-            return;
-           }
-        if(http_code != 200)
-           {
-            Print("Forex Factory Request Retry...", " HTTP code : ", http_code);
-            if(http_code == 429)
-                Sleep(300 * 1000); // 300 sec
-            else
-                Sleep(500);
-           }
-        else
-           {
-            num_of_news = parse_ff_jason_char_array(server_resp, ArraySize(server_resp), forex_factory_news);
-            if(num_of_news > 0)
-               {
-                if(!news_are_already_abailable)
-                   {
-                    save_news_json_file(server_resp);
-                   }
-
-                return;
-               }
-            Print("Forex Factory Has Returned No News...");
-            Sleep(500);
-           }
        }
+    else
+       {
+        Print("Forex Factory Too Frequent Requests...");
+        return false;
+       }
+
+    _last_ffn_request_time = current_server_time;
+    if(http_code < 0)
+       {
+        Alert("Please add \"https://nfs.faireconomy.media/ff_calendar_thisweek.json\"\nto Tools > Options > Expert Advisors > \nAllow WebRequestes for listed URL and don't forget to enable it.");
+        return true; // To avoid repeated alerts
+       }
+    if(http_code == 200)
+       {
+        num_of_news = parse_ff_jason_char_array(server_resp, ArraySize(server_resp), forex_factory_news);
+        if(num_of_news > 0)
+           {
+            if(!news_are_already_abailable)
+               {
+                save_news_json_file(server_resp);
+               }
+
+            return true;
+           }
+        Print("Forex Factory Has Returned No News...");
+       }
+    return false;
    }
 
 //+------------------------------------------------------------------+
@@ -1534,6 +1538,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         return;
        }
 
-    if(alert_if_no_filter_exists) Alert("No news filter was found for ", sym);
+    if(alert_if_no_filter_exists)
+        Alert("No news filter was found for ", sym);
    }
 //+------------------------------------------------------------------+
