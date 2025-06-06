@@ -100,18 +100,19 @@ void manage_the_trailing_sl(long ticket, double sl_diff, double min_profit_of_ts
        {
         return;
        }
-    
+
     if(min_profit_of_tsl_point >= 0)
-      {
-       double open_price = position.GetPriceOpen();
-       string sym = position.GetSymbol();
-       double current_price = SymbolInfoDouble(sym, position.GetType() == TYPE_POSITION_BUY? SYMBOL_BID:SYMBOL_ASK);
-       double sl_effect = (position.GetType() == TYPE_POSITION_BUY? 1:-1) * sl_diff;
-       double profit_diff = (position.GetType() == TYPE_POSITION_BUY? 1:-1) * (current_price - (open_price + sl_effect));
-       double min_profit_of_tsl_diff = min_profit_of_tsl_point * SymbolInfoDouble(sym, SYMBOL_POINT);
-       if(profit_diff < min_profit_of_tsl_diff) return;
-      }
-    
+       {
+        double open_price = position.GetPriceOpen();
+        string sym = position.GetSymbol();
+        double current_price = SymbolInfoDouble(sym, position.GetType() == TYPE_POSITION_BUY ? SYMBOL_BID : SYMBOL_ASK);
+        double sl_effect = (position.GetType() == TYPE_POSITION_BUY ? 1 : -1) * sl_diff;
+        double profit_diff = (position.GetType() == TYPE_POSITION_BUY ? 1 : -1) * (current_price - (open_price + sl_effect));
+        double min_profit_of_tsl_diff = min_profit_of_tsl_point * SymbolInfoDouble(sym, SYMBOL_POINT);
+        if(profit_diff < min_profit_of_tsl_diff)
+            return;
+       }
+
     double pre_stop_loss = position.GetStopLoss();
     double sl = EMPTY_VALUE;
     if(position.GetType() == TYPE_POSITION_BUY)
@@ -144,20 +145,21 @@ double get_trade_volume_based_on_risk_percent(double sl_diff, double _risk_perce
    {
     double balance = AccountInfoDouble(ACCOUNT_BALANCE);
     double lot;
-    
-    if(sym == NULL) sym = _Symbol;
-    
+
+    if(sym == NULL)
+        sym = _Symbol;
+
     if(sym[0] == 'X')
-    {
+       {
         lot = (balance * _risk_percent * 0.01) /
-                 (100 * sl_diff * get_currency_base_in_balance_currency(sym));  
-    
-    }
+              (100 * sl_diff * get_currency_base_in_balance_currency(sym));
+
+       }
     else
-      {
+       {
         lot = (balance * _risk_percent * 0.01) /
-                 (100000 * sl_diff * get_currency_base_in_balance_currency(sym));       
-      }
+              (100000 * sl_diff * get_currency_base_in_balance_currency(sym));
+       }
 
     lot = MathMin(lot, SymbolInfoDouble(sym, SYMBOL_VOLUME_MAX));
     lot = MathMin(lot, (balance / 100000) * 50);
@@ -165,6 +167,40 @@ double get_trade_volume_based_on_risk_percent(double sl_diff, double _risk_perce
     lot = NormalizeDouble(lot, 2);
 
     return lot;
+   }
+
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
+bool has_open_positions(string sym, long _ea_magic_number)
+   {
+    ulong ticket;
+    for(int i = 0; i < PositionsTotal(); i++)
+       {
+        ticket = PositionGetTicket(i);
+        if(PositionSelectByTicket(ticket) &&
+           PositionGetString(POSITION_SYMBOL) == sym &&
+           PositionGetInteger(POSITION_MAGIC) == _ea_magic_number)
+            return true;
+       }
+    return false;
+   }
+
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
+bool has_open_orders(string sym, long _ea_magic_number)
+   {
+    ulong ticket;
+    for(int i = 0; i < OrdersTotal(); i++)
+       {
+        ticket = OrderGetTicket(i);
+        if(OrderSelect(ticket) &&
+           OrderGetString(ORDER_SYMBOL) == sym &&
+           OrderGetInteger(ORDER_MAGIC) == _ea_magic_number)
+            return true;
+       }
+    return false;
    }
 
 //+------------------------------------------------------------------+
