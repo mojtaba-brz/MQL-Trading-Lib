@@ -36,7 +36,7 @@ private:
     datetime          _last_ffn_request_time;
 
 public:
-    ForexFactoryNews  forex_factory_news[];
+    ForexFactoryNews  forex_factory_news[], filtered_forex_factory_news[];
                      ForexFactoryNewsHandlerClass()
        {
         _last_ffn_request_time = 0;
@@ -61,7 +61,7 @@ bool ForexFactoryNewsHandlerClass::update_news()
     bool news_are_already_abailable = read_last_news_file_if_it_is_available(server_resp);
     datetime current_server_time = TimeTradeServer();
 
-    if(current_server_time > (_last_ffn_request_time + 360 * 1000)) // Last time + 6min to avoid request rejections by FF server
+    if(current_server_time > (_last_ffn_request_time + 6 * 60)) // Last time + 6min to avoid request rejections by FF server
        {
         http_code = news_are_already_abailable ?
                     200 :
@@ -69,7 +69,7 @@ bool ForexFactoryNewsHandlerClass::update_news()
        }
     else
        {
-        Print("Forex Factory Too Frequent Requests...");
+        PrintFormat("Forex Factory Too Frequent Requests... Remained wating time: %i sec", ((_last_ffn_request_time + 6 * 60) - current_server_time));
         return false;
        }
 
@@ -101,6 +101,7 @@ bool ForexFactoryNewsHandlerClass::update_news()
 //+------------------------------------------------------------------+
 bool ForexFactoryNewsHandlerClass::in_news_zone(string currency, NewsImpact impact, double time_margin_left_s, double time_margin_right_s)
    {
+
     for(int i = 0; i < ArraySize(forex_factory_news); i++)
        {
         if(forex_factory_news[i].currency == currency && forex_factory_news[i].impact == impact)
@@ -121,8 +122,9 @@ bool ForexFactoryNewsHandlerClass::in_news_zone(string currency, NewsImpact impa
 //+------------------------------------------------------------------+
 void ForexFactoryNewsHandlerClass::filter_the_news()
    {
+    ArrayFree(filtered_forex_factory_news);
     int i = 0;
-    while(ArraySize(forex_factory_news) > i)
+    for(i = 0; i < ArraySize(forex_factory_news); i++)
        {
         int j = 0;
         for(j = 0; j < ArraySize(news_filter_titles); j++)
@@ -131,13 +133,10 @@ void ForexFactoryNewsHandlerClass::filter_the_news()
                StringCompare(forex_factory_news[i].currency, news_filter_currencies[j]) == 0 &&
                forex_factory_news[i].impact == news_filter_impact[j])
                {
-                i++;
+                ArrayResize(filtered_forex_factory_news, ArraySize(filtered_forex_factory_news) + 1);
+                filtered_forex_factory_news[ArraySize(filtered_forex_factory_news) - 1] = forex_factory_news[i];
                 break;
                }
-           }
-        if(j == ArraySize(news_filter_titles))
-           {
-            EraseOrdered(forex_factory_news, i);
            }
        }
    }
@@ -147,9 +146,9 @@ void ForexFactoryNewsHandlerClass::filter_the_news()
 //+------------------------------------------------------------------+
 bool ForexFactoryNewsHandlerClass::in_filtered_news_zone(int time_margin_left_s, int time_margin_right_s, datetime &news_date, datetime current_time)
    {
-    for(int i = 0; i < ArraySize(forex_factory_news); i++)
+    for(int i = 0; i < ArraySize(filtered_forex_factory_news); i++)
        {
-        datetime news_date_temp = forex_factory_news[i].release_time;
+        datetime news_date_temp = filtered_forex_factory_news[i].release_time;
         if(current_time <= (news_date_temp + time_margin_right_s) && current_time >= (news_date_temp - time_margin_left_s))
            {
             news_date = news_date_temp;
@@ -1251,6 +1250,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         return;
        }
 
-    if(alert_if_no_filter_exists) Alert("No news filter was found for ", sym);
+    if(alert_if_no_filter_exists)
+        Alert("No news filter was found for ", sym);
    }
 //+------------------------------------------------------------------+
