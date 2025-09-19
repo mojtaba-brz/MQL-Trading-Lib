@@ -37,3 +37,14 @@ int get_hour()
    TimeToStruct(time, time_struct);
    return time_struct.hour;
   }
+
+datetime get_start_of_today_time_sec()
+{
+    MqlDateTime current_time_struct;
+    TimeCurrent(current_time_struct);
+    current_time_struct.hour = 0;
+    current_time_struct.min = 0;
+    current_time_struct.sec = 0;
+    datetime start_of_today_time_sec = StructToTime(current_time_struct);
+    return start_of_today_time_sec;
+}

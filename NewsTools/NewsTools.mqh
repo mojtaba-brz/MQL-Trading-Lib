@@ -59,7 +59,7 @@ bool ForexFactoryNewsHandlerClass::update_news()
     string header, data_string = "";
     int http_code = 0;
     bool news_are_already_abailable = read_last_news_file_if_it_is_available(server_resp);
-    datetime current_server_time = TimeTradeServer();
+    datetime current_server_time = TimeCurrent();
 
     if(current_server_time > (_last_ffn_request_time + 6 * 60)) // Last time + 6min to avoid request rejections by FF server
        {
@@ -220,7 +220,7 @@ ForexFactoryNews parse_single_ff_news_string(string news)
     ffn.datatime.min = (int)StringToInteger(news_parts[1]);
     ffn.datatime.sec = (int)StringToInteger(news_parts[2]);
     ffn.release_time = StructToTime(ffn.datatime);
-    datetime server_offset = TimeGMT() - TimeTradeServer();
+    datetime server_offset = TimeGMT() - TimeCurrent();
     ffn.release_time -= server_offset;
     StringSplit(news_parts_2[1], ':', news_parts);
     ffn.release_time += (int)StringToInteger(news_parts[0]) * 3600;
