@@ -9,6 +9,8 @@
 #include "MQL_Easy/MQL_Easy/MQL_Easy.mqh"
 #include "NewsTools/NewsTools.mqh"
 #include "TimeBasedModules/TimeBasedModules.mqh"
+#include "PriceAction/PriceAction.mqh"
+#include "Drawing/Drawing.mqh"
 
 #include "typedefs.mqh"
 #include "IndicatorUtils.mqh"

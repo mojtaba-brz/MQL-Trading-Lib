@@ -21,3 +21,27 @@ void Erase(T& A[], int iPos)
     A[iPos] = A[iLast];
     ArrayResize(A, iLast);
    }
+
+template <typename T>
+void append_element(T& A[], T value)
+   {
+    int iLast = ArraySize(A);
+    ArrayResize(A, iLast + 1);
+    A[iLast] = value;
+   }
+
+template <typename T>
+void append_element_struct(T& A[], T &value)
+   {
+    int iLast = ArraySize(A);
+    ArrayResize(A, iLast + 1);
+    A[iLast] = value;
+   }
+
+template <typename T>
+void swing_element(T& A[], int first_idx, int second_idx)
+   {
+    T temp_struct = A[first_idx];
+    A[first_idx]  = A[second_idx];
+    A[second_idx] = temp_struct;
+   }
