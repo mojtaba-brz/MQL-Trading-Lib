@@ -5,10 +5,9 @@
 //+------------------------------------------------------------------+
 #include "../ArrayFunctions.mqh"
 #include "../typedefs.mqh"
+#include "../IndicatorUtils.mqh"
 
 #define MAJOR_LEVEL_RESOLUTION_PIPS (10)
-#define MAJOR_LEVEL_START_SEARCH_POINT_PIPS (20)
-#define MAJOR_LEVEL_MAX_PIPS (1500)
 
 struct LevelValidityStruct {
     double level_price;
@@ -60,7 +59,12 @@ void find_major_and_minor_round_levels_pips(int &major_level_pips, int &minor_le
     best_major_level_pips = major_level_pips;
     best_minor_level_pips = major_level_pips / 5;
     double best_levels_loss = MAX_DOUBLE_VALUE;
-    for(major_level_pips = MAJOR_LEVEL_START_SEARCH_POINT_PIPS; major_level_pips < MAJOR_LEVEL_MAX_PIPS; major_level_pips += MAJOR_LEVEL_RESOLUTION_PIPS) {
+    int atr_handle = iATR(_Symbol, PERIOD_D1, 22);
+    int max_major_level = (int)MathRound(1.5 * convert_price_to_pips(get_indicator_value(atr_handle)));
+    max_major_level = max_major_level + (MAJOR_LEVEL_RESOLUTION_PIPS - (max_major_level%MAJOR_LEVEL_RESOLUTION_PIPS));
+    int major_level_pips_start_value = MathMax((int)MathRound(0.85 * convert_price_to_pips(get_indicator_value(atr_handle))), 40);
+    major_level_pips_start_value -= major_level_pips_start_value%MAJOR_LEVEL_RESOLUTION_PIPS;
+    for(major_level_pips = major_level_pips_start_value; major_level_pips <= max_major_level; major_level_pips += MAJOR_LEVEL_RESOLUTION_PIPS) {
         minor_level_pips = major_level_pips / 5;
         for(int i = 0; i < ArraySize(swing_points); i++) {
             price_in_pip = (int)MathRound(swing_points[i] * price_to_pip_multiplier);
@@ -94,10 +98,13 @@ void find_major_and_minor_round_levels_pips(int &major_level_pips, int &minor_le
             best_minor_level_pips = minor_level_pips;
             best_levels_loss = levels_loss;
         }
+        // PrintFormat("Major Level: %i,  Loss:%f", major_level_pips, levels_loss);
     }
 
     major_level_pips = best_major_level_pips;
     minor_level_pips = best_minor_level_pips;
+    
+    PrintFormat("Major Level: %ipips,  ATR(D1, 22):%i pips", major_level_pips, convert_price_to_pips(get_indicator_value(atr_handle)));
 }
 //+------------------------------------------------------------------+
 
@@ -166,7 +173,7 @@ void add_level(LevelValidityStruct &levels_array[], double level, int diff_pips)
 double calc_level_loss(LevelValidityStruct &level)
 {
     return ((-level.num_of_swings) + 
-            ((level.num_of_swings > 0)  * 1.9 * level.abs_average_swing_diff_pips + 
+            ((level.num_of_swings > 0)  * 1.3 * level.abs_average_swing_diff_pips + 
              (level.num_of_swings <= 0) * 3));
 }
 
