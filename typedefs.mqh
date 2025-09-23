@@ -45,3 +45,17 @@ enum GeneralSignal
     BUY_SIGNAL,
     SELL_SIGNAL
 };
+
+enum PosCloseMode
+{
+    POS_CLOSE_ALL,
+    POS_CLOSE_BUY,
+    POS_CLOSE_SELL
+};
+
+enum OrderCloseMode
+{
+    ORDER_CLOSE_ALL,
+    ORDER_CLOSE_BUY,
+    ORDER_CLOSE_SELL
+};

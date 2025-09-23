@@ -118,14 +118,16 @@ void SessionsClass::on_tick_step()
 void SessionsClass::draw_current_sessions()
 {
     MqlDateTime current_time_struct;
+    int offset;
     TimeCurrent(current_time_struct);
     int current_hour = current_time_struct.hour;
     for(int i = 0; i < 4; i++) {
         bool in_session = (sessions[i].start_hour < sessions[i].end_hour && current_hour >= sessions[i].start_hour && sessions[i].end_hour > current_hour) ||
                           (sessions[i].start_hour > sessions[i].end_hour && (current_hour >= sessions[i].start_hour || sessions[i].end_hour > current_hour));
         if(in_session) {
+            offset = (sessions[i].start_hour > sessions[i].end_hour && current_hour < sessions[i].end_hour)? -ONE_DAY_SEC:0;
             draw_session_on_the_current_chart_if_is_new(_prefix_objects, sessions[i].start_hour, sessions[i].end_hour,
-                    sessions[i].bg_clr, sessions[i].brdr_clr, sessions[i].name);
+                    sessions[i].bg_clr, sessions[i].brdr_clr, sessions[i].name, offset);
         } else {
             clear_session(_prefix_objects, sessions[i].name);
         }

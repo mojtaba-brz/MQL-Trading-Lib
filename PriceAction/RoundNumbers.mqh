@@ -18,7 +18,7 @@ struct LevelValidityStruct {
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-void find_major_and_minor_round_levels_pips(int &major_level_pips, int &minor_level_pips)
+void find_major_and_minor_round_levels_pips(int &major_level_pips, int &minor_level_pips, int &ind_atr_handle)
 {
     LevelValidityStruct found_level_validity_array[], new_validity_level_data;
     double close_price_array[], swing_points[], level;
@@ -59,10 +59,9 @@ void find_major_and_minor_round_levels_pips(int &major_level_pips, int &minor_le
     best_major_level_pips = major_level_pips;
     best_minor_level_pips = major_level_pips / 5;
     double best_levels_loss = MAX_DOUBLE_VALUE;
-    int atr_handle = iATR(_Symbol, PERIOD_D1, 22);
-    int max_major_level = (int)MathRound(1.5 * convert_price_to_pips(get_indicator_value(atr_handle)));
+    int max_major_level = (int)MathRound(1.5 * convert_price_to_pips(get_indicator_value(ind_atr_handle)));
     max_major_level = max_major_level + (MAJOR_LEVEL_RESOLUTION_PIPS - (max_major_level%MAJOR_LEVEL_RESOLUTION_PIPS));
-    int major_level_pips_start_value = MathMax((int)MathRound(0.85 * convert_price_to_pips(get_indicator_value(atr_handle))), 40);
+    int major_level_pips_start_value = MathMax((int)MathRound(0.85 * convert_price_to_pips(get_indicator_value(ind_atr_handle))), 40);
     major_level_pips_start_value -= major_level_pips_start_value%MAJOR_LEVEL_RESOLUTION_PIPS;
     for(major_level_pips = major_level_pips_start_value; major_level_pips <= max_major_level; major_level_pips += MAJOR_LEVEL_RESOLUTION_PIPS) {
         minor_level_pips = major_level_pips / 5;
@@ -104,7 +103,7 @@ void find_major_and_minor_round_levels_pips(int &major_level_pips, int &minor_le
     major_level_pips = best_major_level_pips;
     minor_level_pips = best_minor_level_pips;
     
-    PrintFormat("Major Level: %ipips,  ATR(D1, 22):%i pips", major_level_pips, convert_price_to_pips(get_indicator_value(atr_handle)));
+    PrintFormat("Major Level: %ipips,  ATR(D1, 22):%i pips", major_level_pips, convert_price_to_pips(get_indicator_value(ind_atr_handle)));
 }
 //+------------------------------------------------------------------+
 
@@ -188,5 +187,14 @@ void sort_level_validity_array_based_on_levels_upward(LevelValidityStruct &level
                 not_done = true;
             }
         }
+    }
+}
+
+double get_round_level(double price, int level_pips, bool upper_lvl_requied = true)
+{
+    if(upper_lvl_requied) {
+        return (convert_pips_to_price(convert_price_to_pips(price) + level_pips - convert_price_to_pips(price)%level_pips));
+    } else {
+        return convert_pips_to_price(convert_price_to_pips(price) - convert_price_to_pips(price)%level_pips);
     }
 }

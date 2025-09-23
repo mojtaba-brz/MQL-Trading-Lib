@@ -11,6 +11,7 @@
 #include "TimeBasedModules/TimeBasedModules.mqh"
 #include "PriceAction/PriceAction.mqh"
 #include "Drawing/Drawing.mqh"
+#include "Random/Random.mqh"
 
 #include "typedefs.mqh"
 #include "IndicatorUtils.mqh"
@@ -18,3 +19,4 @@
 #include "PositionManagementTools.mqh"
 #include "FastClose.mqh"
 #include "ArrayFunctions.mqh"
+#include "Compare.mqh"

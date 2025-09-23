@@ -342,3 +342,8 @@ string broker_symbol_to_standard_symbol(string sym)
    StringSplit(sym, '_', splited_sym_array);
    return splited_sym_array[0];
 }
+
+double get_current_price()
+{
+   return (SymbolInfoDouble(_Symbol, SYMBOL_ASK) + SymbolInfoDouble(_Symbol, SYMBOL_BID)) * 0.5;
+}
