@@ -59,3 +59,10 @@ enum OrderCloseMode
     ORDER_CLOSE_BUY,
     ORDER_CLOSE_SELL
 };
+
+struct NewsStruct
+  {
+   datetime          time;
+   string            title, impact, currency;
+   double            mean_im_profit_pp, std_im_profit_pp, max_spread_pp;
+  };
