@@ -121,7 +121,8 @@ void manage_the_trailing_sl(long ticket, double sl_diff, double min_profit_of_ts
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-double get_trade_volume_based_on_risk_percent(double sl_diff, double _risk_percent = 2, string sym = NULL)
+bool dummy_boolean;
+double get_trade_volume_based_on_risk_percent(double sl_diff, double _risk_percent, string sym, bool &lower_limit_exceeded)
 {
     double balance = AccountInfoDouble(ACCOUNT_BALANCE);
     double lot;
@@ -140,6 +141,7 @@ double get_trade_volume_based_on_risk_percent(double sl_diff, double _risk_perce
 
     lot = MathMin(lot, SymbolInfoDouble(sym, SYMBOL_VOLUME_MAX));
     lot = MathMin(lot, (balance / 100000) * 50);
+    lower_limit_exceeded = lot < 0.01;
     lot = MathMax(lot, 0.01);
     lot = NormalizeDouble(lot, 2);
 
