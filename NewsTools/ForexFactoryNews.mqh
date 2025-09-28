@@ -6,28 +6,26 @@
 
 #include "../ArrayFunctions.mqh"
 
-enum NewsImpact
-   {
+enum NewsImpact {
     ENUM_NEWS_IMPACT_GREY,
     ENUM_NEWS_IMPACT_MEDIUM,
     ENUM_NEWS_IMPACT_RED,
     ENUM_NEWS_IMPACT_HOLIDAY
-   };
+};
 
-struct ForexFactoryNews
-   {
+struct ForexFactoryNews {
     string            title, currency, date, impact_str, forecast, previous;
     MqlDateTime       datatime;
     datetime          release_time;
     NewsImpact        impact;
-   };
+};
 
 
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
 class ForexFactoryNewsHandlerClass
-   {
+{
 private:
     int               num_of_news;
     string            news_filter_currencies[],
@@ -37,168 +35,167 @@ private:
 
 public:
     ForexFactoryNews  forex_factory_news[], filtered_forex_factory_news[];
-                     ForexFactoryNewsHandlerClass()
-       {
+    ForexFactoryNewsHandlerClass()
+    {
         _last_ffn_request_time = 0;
-       }
-                    ~ForexFactoryNewsHandlerClass() {}
+    }
+    ~ForexFactoryNewsHandlerClass() {}
     bool              update_news();
     bool              in_news_zone(string currency, NewsImpact impact, double time_margin_left_s, double time_margin_right_s);
     bool              in_filtered_news_zone(int time_margin_left_s, int time_margin_right_s, datetime &news_date, datetime current_time);
     void              print_news(int index);
-    void             update_news_filter_with_symbol(string sym, bool alert_if_no_filter_exists = true);
-    void             filter_the_news();
-   };
+    void              update_news_filter_with_symbol(string sym, bool alert_if_no_filter_exists = true);
+    void              filter_the_news();
+    int               get_time_to_the_nearest_news(long current_time);
+};
 
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
 bool ForexFactoryNewsHandlerClass::update_news()
-   {
+{
     char data[], server_resp[];
     string header, data_string = "";
     int http_code = 0;
     bool news_are_already_abailable = read_last_news_file_if_it_is_available(server_resp);
     datetime current_server_time = TimeCurrent();
 
-    if(current_server_time > (_last_ffn_request_time + 6 * 60)) // Last time + 6min to avoid request rejections by FF server
-       {
+    if(current_server_time > (_last_ffn_request_time + 6 * 60)) { // Last time + 6min to avoid request rejections by FF server
         http_code = news_are_already_abailable ?
                     200 :
                     WebRequest("GET", "https://nfs.faireconomy.media/ff_calendar_thisweek.json", NULL, 20, data, server_resp, header);
-       }
-    else
-       {
+    } else {
         PrintFormat("Forex Factory Too Frequent Requests... Remained wating time: %i sec", ((_last_ffn_request_time + 6 * 60) - current_server_time));
         return false;
-       }
+    }
 
     _last_ffn_request_time = current_server_time;
-    if(http_code < 0)
-       {
+    if(http_code < 0) {
         Alert("Please add \"https://nfs.faireconomy.media/ff_calendar_thisweek.json\"\nto Tools > Options > Expert Advisors > \nAllow WebRequestes for listed URL and don't forget to enable it.");
         return true; // To avoid repeated alerts
-       }
-    if(http_code == 200)
-       {
+    }
+    if(http_code == 200) {
         num_of_news = parse_ff_jason_char_array(server_resp, ArraySize(server_resp), forex_factory_news);
-        if(num_of_news > 0)
-           {
-            if(!news_are_already_abailable)
-               {
+        if(num_of_news > 0) {
+            if(!news_are_already_abailable) {
                 save_news_json_file(server_resp);
-               }
+            }
 
             return true;
-           }
+        }
         Print("Forex Factory Has Returned No News...");
-       }
+    }
     return false;
-   }
+}
 
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
 bool ForexFactoryNewsHandlerClass::in_news_zone(string currency, NewsImpact impact, double time_margin_left_s, double time_margin_right_s)
-   {
+{
 
-    for(int i = 0; i < ArraySize(forex_factory_news); i++)
-       {
-        if(forex_factory_news[i].currency == currency && forex_factory_news[i].impact == impact)
-           {
+    for(int i = 0; i < ArraySize(forex_factory_news); i++) {
+        if(forex_factory_news[i].currency == currency && forex_factory_news[i].impact == impact) {
             datetime current_time = TimeGMT();
             datetime news_time = StructToTime(forex_factory_news[i].datatime);
-            if(news_time <= (current_time + time_margin_right_s) && news_time >= (current_time - time_margin_left_s))
-               {
+            if(news_time <= (current_time + time_margin_right_s) && news_time >= (current_time - time_margin_left_s)) {
                 return true;
-               }
-           }
-       }
+            }
+        }
+    }
     return false;
-   }
+}
 
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
 void ForexFactoryNewsHandlerClass::filter_the_news()
-   {
+{
     ArrayFree(filtered_forex_factory_news);
     int i = 0;
-    for(i = 0; i < ArraySize(forex_factory_news); i++)
-       {
+    for(i = 0; i < ArraySize(forex_factory_news); i++) {
         int j = 0;
-        for(j = 0; j < ArraySize(news_filter_titles); j++)
-           {
+        for(j = 0; j < ArraySize(news_filter_titles); j++) {
             if(StringCompare(forex_factory_news[i].title, news_filter_titles[j]) == 0        &&
                StringCompare(forex_factory_news[i].currency, news_filter_currencies[j]) == 0 &&
-               forex_factory_news[i].impact == news_filter_impact[j])
-               {
+               forex_factory_news[i].impact == news_filter_impact[j]) {
                 ArrayResize(filtered_forex_factory_news, ArraySize(filtered_forex_factory_news) + 1);
                 filtered_forex_factory_news[ArraySize(filtered_forex_factory_news) - 1] = forex_factory_news[i];
                 break;
-               }
-           }
-       }
-   }
+            }
+        }
+    }
+}
 
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
 bool ForexFactoryNewsHandlerClass::in_filtered_news_zone(int time_margin_left_s, int time_margin_right_s, datetime &news_date, datetime current_time)
-   {
-    for(int i = 0; i < ArraySize(filtered_forex_factory_news); i++)
-       {
+{
+    for(int i = 0; i < ArraySize(filtered_forex_factory_news); i++) {
         datetime news_date_temp = filtered_forex_factory_news[i].release_time;
-        if(current_time <= (news_date_temp + time_margin_right_s) && current_time >= (news_date_temp - time_margin_left_s))
-           {
+        if(current_time <= (news_date_temp + time_margin_right_s) && current_time >= (news_date_temp - time_margin_left_s)) {
             news_date = news_date_temp;
             return true;
-           }
-       }
+        }
+    }
     return false;
-   }
+}
+
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
+int ForexFactoryNewsHandlerClass::get_time_to_the_nearest_news(long current_time)
+{
+    int min_time_to_news = INT_MAX;
+    long news_date_temp;
+    for(int i = 0; i < ArraySize(filtered_forex_factory_news); i++) {
+        news_date_temp = (long)filtered_forex_factory_news[i].release_time;
+        if(MathAbs(news_date_temp - current_time) <= MathAbs(min_time_to_news)) {
+            min_time_to_news = (int)(news_date_temp - current_time);
+        } else {
+            return min_time_to_news;
+        }
+    }
+    return min_time_to_news;
+}
 
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
 void ForexFactoryNewsHandlerClass::print_news(int index)
-   {
+{
     PrintFormat("Currency : %s, Impact : %s, TimeOriginal : %s, DateTime: %i/%i/%i  %i:%i", forex_factory_news[index].currency,
                 forex_factory_news[index].impact_str, forex_factory_news[index].date, forex_factory_news[index].datatime.year
                 , forex_factory_news[index].datatime.mon, forex_factory_news[index].datatime.day, forex_factory_news[index].datatime.hour
                 , forex_factory_news[index].datatime.min, forex_factory_news[index].datatime.sec);
-   }
+}
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
 int parse_ff_jason_char_array(char &server_resp[], int len, ForexFactoryNews &forex_factory_news[])
-   {
+{
     int num_of_news = 0, start_index = 0, end_index = 0;
-    for(int i = 0; i < len; i++)
-       {
-        if(server_resp[i] == '{')
-           {
+    for(int i = 0; i < len; i++) {
+        if(server_resp[i] == '{') {
             start_index = i;
-           }
-        else
-            if(server_resp[i] == '}')
-               {
-                end_index = i;
-                num_of_news++;
-                ArrayResize(forex_factory_news, num_of_news);
-                forex_factory_news[num_of_news - 1] = parse_single_ff_news_string(CharArrayToString(server_resp, start_index + 1, end_index - 1));
-               }
-       }
+        } else if(server_resp[i] == '}') {
+            end_index = i;
+            num_of_news++;
+            ArrayResize(forex_factory_news, num_of_news);
+            forex_factory_news[num_of_news - 1] = parse_single_ff_news_string(CharArrayToString(server_resp, start_index + 1, end_index - 1));
+        }
+    }
 
     return num_of_news;
-   }
+}
 //+------------------------------------------------------------------+
 
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
 ForexFactoryNews parse_single_ff_news_string(string news)
-   {
+{
     ForexFactoryNews ffn;
     string news_parts[], news_parts_2[];
     StringSplit(news, '"', news_parts);
@@ -231,53 +228,51 @@ ForexFactoryNews parse_single_ff_news_string(string news)
                  ffn.impact_str == "Medium"  ? ENUM_NEWS_IMPACT_MEDIUM : ENUM_NEWS_IMPACT_GREY;
 
     return ffn;
-   }
+}
 
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
 bool read_last_news_file_if_it_is_available(char &server_resp[])
-   {
+{
     string last_datime_str = TimeToString(get_last_date_time_of_week()),
            last_day_and_time[];
     StringSplit(last_datime_str, ' ', last_day_and_time);
     string file_name = "downloaded_news_file_" + last_day_and_time[0] + ".txt";
     int file_handle = FileOpen(file_name, FILE_READ | FILE_TXT);
-    if(file_handle < 0)
-       {
+    if(file_handle < 0) {
         Print("News was not read from file : " + file_name);
         return false;
-       }
+    }
     StringToCharArray(FileReadString(file_handle), server_resp);
     FileClose(file_handle);
     return true;
-   }
+}
 
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
 void save_news_json_file(char &server_resp[])
-   {
+{
     string last_datime_str = TimeToString(get_last_date_time_of_week()),
            last_day_and_time[];
     StringSplit(last_datime_str, ' ', last_day_and_time);
     string file_name = "downloaded_news_file_" + last_day_and_time[0] + ".txt";
     int file_handle = FileOpen(file_name, FILE_WRITE | FILE_TXT);
-    if(file_handle < 0)
-       {
+    if(file_handle < 0) {
         Print("News was not saved in file : " + file_name);
         return;
-       }
+    }
     string file_txt = CharArrayToString(server_resp);
     FileWriteString(file_handle, file_txt);
     FileClose(file_handle);
-   }
+}
 
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
 datetime get_last_date_time_of_week()
-   {
+{
 // Get the current datetime
     datetime current_time = TimeCurrent();
     MqlDateTime time_struct;
@@ -296,11 +291,11 @@ datetime get_last_date_time_of_week()
     lastDateTimeOfWeek = StructToTime(time_struct);
 
     return lastDateTimeOfWeek;
-   }
+}
 
 //+------------------------------------------------------------------+
 void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bool alert_if_no_filter_exists)
-   {
+{
 
     ArrayFree(news_filter_currencies);
     ArrayFree(news_filter_titles);
@@ -388,7 +383,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_filter_currencies[25] = "AUD";
         news_filter_impact[25] = ENUM_NEWS_IMPACT_RED;
         return;
-       }
+    }
 
     if(StringCompare(sym, "AUDCHF") == 0) {
         ArrayResize(news_filter_currencies, 26);
@@ -473,7 +468,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_filter_currencies[25] = "CHF";
         news_filter_impact[25] = ENUM_NEWS_IMPACT_RED;
         return;
-       }
+    }
 
     if(StringCompare(sym, "AUDJPY") == 0) {
         ArrayResize(news_filter_currencies, 26);
@@ -558,7 +553,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_filter_currencies[25] = "AUD";
         news_filter_impact[25] = ENUM_NEWS_IMPACT_RED;
         return;
-       }
+    }
 
     if(StringCompare(sym, "AUDNZD") == 0) {
         ArrayResize(news_filter_currencies, 15);
@@ -610,7 +605,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_filter_currencies[14] = "AUD";
         news_filter_impact[14] = ENUM_NEWS_IMPACT_RED;
         return;
-       }
+    }
 
     if(StringCompare(sym, "AUDUSD") == 0) {
         ArrayResize(news_filter_currencies, 29);
@@ -704,7 +699,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_filter_currencies[28] = "AUD";
         news_filter_impact[28] = ENUM_NEWS_IMPACT_RED;
         return;
-       }
+    }
 
     if(StringCompare(sym, "CADCHF") == 0) {
         ArrayResize(news_filter_currencies, 19);
@@ -768,7 +763,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_filter_currencies[18] = "CHF";
         news_filter_impact[18] = ENUM_NEWS_IMPACT_RED;
         return;
-       }
+    }
 
     if(StringCompare(sym, "CADJPY") == 0) {
         ArrayResize(news_filter_currencies, 28);
@@ -859,7 +854,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_filter_currencies[27] = "USD";
         news_filter_impact[27] = ENUM_NEWS_IMPACT_RED;
         return;
-       }
+    }
 
     if(StringCompare(sym, "CHFJPY") == 0) {
         ArrayResize(news_filter_currencies, 14);
@@ -908,7 +903,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_filter_currencies[13] = "CHF";
         news_filter_impact[13] = ENUM_NEWS_IMPACT_RED;
         return;
-       }
+    }
 
     if(StringCompare(sym, "EURAUD") == 0) {
         ArrayResize(news_filter_currencies, 16);
@@ -963,7 +958,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_filter_currencies[15] = "AUD";
         news_filter_impact[15] = ENUM_NEWS_IMPACT_RED;
         return;
-       }
+    }
 
     if(StringCompare(sym, "EURCAD") == 0) {
         ArrayResize(news_filter_currencies, 10);
@@ -1000,7 +995,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_filter_currencies[9] = "CAD";
         news_filter_impact[9] = ENUM_NEWS_IMPACT_RED;
         return;
-       }
+    }
 
     if(StringCompare(sym, "EURCHF") == 0) {
         ArrayResize(news_filter_currencies, 10);
@@ -1037,7 +1032,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_filter_currencies[9] = "CHF";
         news_filter_impact[9] = ENUM_NEWS_IMPACT_RED;
         return;
-       }
+    }
 
     if(StringCompare(sym, "EURGBP") == 0) {
         ArrayResize(news_filter_currencies, 6);
@@ -1062,7 +1057,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_filter_currencies[5] = "GBP";
         news_filter_impact[5] = ENUM_NEWS_IMPACT_RED;
         return;
-       }
+    }
 
     if(StringCompare(sym, "EURJPY") == 0) {
         ArrayResize(news_filter_currencies, 18);
@@ -1123,7 +1118,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_filter_currencies[17] = "USD";
         news_filter_impact[17] = ENUM_NEWS_IMPACT_RED;
         return;
-       }
+    }
 
     if(StringCompare(sym, "EURNZD") == 0) {
         ArrayResize(news_filter_currencies, 11);
@@ -1163,7 +1158,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_filter_currencies[10] = "NZD";
         news_filter_impact[10] = ENUM_NEWS_IMPACT_RED;
         return;
-       }
+    }
 
     if(StringCompare(sym, "EURUSD") == 0) {
         ArrayResize(news_filter_currencies, 17);
@@ -1221,7 +1216,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_filter_currencies[16] = "USD";
         news_filter_impact[16] = ENUM_NEWS_IMPACT_RED;
         return;
-       }
+    }
 
     if(StringCompare(sym, "GBPAUD") == 0) {
         ArrayResize(news_filter_currencies, 21);
@@ -1291,7 +1286,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_filter_currencies[20] = "GBP";
         news_filter_impact[20] = ENUM_NEWS_IMPACT_RED;
         return;
-       }
+    }
 
     if(StringCompare(sym, "GBPCAD") == 0) {
         ArrayResize(news_filter_currencies, 17);
@@ -1349,7 +1344,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_filter_currencies[16] = "GBP";
         news_filter_impact[16] = ENUM_NEWS_IMPACT_RED;
         return;
-       }
+    }
 
     if(StringCompare(sym, "GBPCHF") == 0) {
         ArrayResize(news_filter_currencies, 13);
@@ -1395,7 +1390,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_filter_currencies[12] = "GBP";
         news_filter_impact[12] = ENUM_NEWS_IMPACT_RED;
         return;
-       }
+    }
 
     if(StringCompare(sym, "GBPJPY") == 0) {
         ArrayResize(news_filter_currencies, 20);
@@ -1462,7 +1457,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_filter_currencies[19] = "GBP";
         news_filter_impact[19] = ENUM_NEWS_IMPACT_RED;
         return;
-       }
+    }
 
     if(StringCompare(sym, "GBPNZD") == 0) {
         ArrayResize(news_filter_currencies, 19);
@@ -1526,7 +1521,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_filter_currencies[18] = "GBP";
         news_filter_impact[18] = ENUM_NEWS_IMPACT_RED;
         return;
-       }
+    }
 
     if(StringCompare(sym, "GBPUSD") == 0) {
         ArrayResize(news_filter_currencies, 20);
@@ -1593,7 +1588,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_filter_currencies[19] = "GBP";
         news_filter_impact[19] = ENUM_NEWS_IMPACT_RED;
         return;
-       }
+    }
 
     if(StringCompare(sym, "NZDCAD") == 0) {
         ArrayResize(news_filter_currencies, 26);
@@ -1678,7 +1673,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_filter_currencies[25] = "CAD";
         news_filter_impact[25] = ENUM_NEWS_IMPACT_RED;
         return;
-       }
+    }
 
     if(StringCompare(sym, "NZDCHF") == 0) {
         ArrayResize(news_filter_currencies, 21);
@@ -1748,7 +1743,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_filter_currencies[20] = "CHF";
         news_filter_impact[20] = ENUM_NEWS_IMPACT_RED;
         return;
-       }
+    }
 
     if(StringCompare(sym, "NZDJPY") == 0) {
         ArrayResize(news_filter_currencies, 24);
@@ -1827,7 +1822,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_filter_currencies[23] = "USD";
         news_filter_impact[23] = ENUM_NEWS_IMPACT_RED;
         return;
-       }
+    }
 
     if(StringCompare(sym, "NZDUSD") == 0) {
         ArrayResize(news_filter_currencies, 29);
@@ -1921,7 +1916,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_filter_currencies[28] = "USD";
         news_filter_impact[28] = ENUM_NEWS_IMPACT_RED;
         return;
-       }
+    }
 
     if(StringCompare(sym, "USDCAD") == 0) {
         ArrayResize(news_filter_currencies, 11);
@@ -1961,7 +1956,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_filter_currencies[10] = "USD";
         news_filter_impact[10] = ENUM_NEWS_IMPACT_RED;
         return;
-       }
+    }
 
     if(StringCompare(sym, "USDCHF") == 0) {
         ArrayResize(news_filter_currencies, 21);
@@ -2031,7 +2026,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_filter_currencies[20] = "CHF";
         news_filter_impact[20] = ENUM_NEWS_IMPACT_RED;
         return;
-       }
+    }
 
     if(StringCompare(sym, "USDJPY") == 0) {
         ArrayResize(news_filter_currencies, 25);
@@ -2113,7 +2108,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_filter_currencies[24] = "USD";
         news_filter_impact[24] = ENUM_NEWS_IMPACT_RED;
         return;
-       }
+    }
 
     if(StringCompare(sym, "XAUUSD") == 0) {
         ArrayResize(news_filter_currencies, 23);
@@ -2189,9 +2184,9 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_filter_currencies[22] = "USD";
         news_filter_impact[22] = ENUM_NEWS_IMPACT_RED;
         return;
-       }
+    }
 
     if(alert_if_no_filter_exists)
         Alert("No news filter was found for ", sym);
-   }
+}
 //+------------------------------------------------------------------+

@@ -1,3 +1,4 @@
+
 int flip_a_coin()
 {
    // 0: head

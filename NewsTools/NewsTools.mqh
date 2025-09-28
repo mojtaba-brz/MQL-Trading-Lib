@@ -1,15 +1,16 @@
 #include "ForexFactoryNews.mqh"
+#include "OfflineNewsUtils.mqh"
 
-void highlight_news_on_the_chart(string pre_fix, ForexFactoryNews &news, datetime &pre_obj_time, int &news_index, double price = 0.)
+void highlight_news_on_the_chart(string pre_fix, ForexFactoryNews &news, datetime &_pre_obj_time, int &_news_index, double price = 0.)
    {
-    if(pre_obj_time == news.release_time) {
-        string object_name = pre_fix + IntegerToString(news_index) + " - ";
+    if(_pre_obj_time == news.release_time) {
+        string object_name = pre_fix + IntegerToString(_news_index) + " - ";
         ObjectCreate(0, object_name + "_label", OBJ_TEXT, 0, news.release_time, price);
         ObjectSetString(0, object_name + "_label", OBJPROP_TEXT, ".");
         return;        
     }
 
-    string object_name = pre_fix + IntegerToString(news_index) + " - ";
+    string object_name = pre_fix + IntegerToString(_news_index) + " - ";
     ObjectCreate(0, object_name, OBJ_VLINE, 0, news.release_time, price);
     ObjectSetInteger(0, object_name, OBJPROP_BACK, true);
     ObjectSetInteger(0, object_name, OBJPROP_STYLE, STYLE_DASH);
@@ -20,6 +21,6 @@ void highlight_news_on_the_chart(string pre_fix, ForexFactoryNews &news, datetim
     ObjectSetInteger(0, object_name + "_label", OBJPROP_ANCHOR, ANCHOR_CENTER);
     ObjectSetDouble(0, object_name + "_label", OBJPROP_ANGLE, 90);
 
-    news_index++;
-    pre_obj_time = news.release_time;
+    _news_index++;
+    _pre_obj_time = news.release_time;
    }

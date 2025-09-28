@@ -38,7 +38,7 @@ int last_news_idx;
 //+------------------------------------------------------------------+
 int OnInit()
   {
-   if(!parse_news_file())
+   if(!parse_news_file(news_list))
       return INIT_FAILED;
       
    SetIndexBuffer(0, is_there_news, INDICATOR_DATA);
@@ -131,63 +131,6 @@ void highlight_news_on_the_chart(NewsStruct &news)
    news_index++;
    pre_obj_time = news.time;
   }
-
-//+------------------------------------------------------------------+
-//|                                                                  |
-//+------------------------------------------------------------------+
-bool parse_news_file()
-  {
-   string csv_file_name = broker_symbol_to_standard_symbol(_Symbol) + "-NewsIndicatorFile.csv";
-   ResetLastError();
-   int csv_file_handle = FileOpen(csv_file_name, FILE_ANSI | FILE_CSV | FILE_COMMON | FILE_READ, "\n");
-   if(csv_file_handle < 0)
-     {
-      Alert("Could not read " + csv_file_name + ". Error : " + IntegerToString(GetLastError()));
-      FileClose(csv_file_handle);
-      return(false);
-     }
-   else
-     {
-      int line_count = 0;
-      ArrayFree(news_list);
-      NewsStruct news_struc_temp;
-      MqlDateTime time_temp_struct;
-      string line_items[];
-      while(!FileIsEnding(csv_file_handle))
-        {
-         string line = FileReadString(csv_file_handle);
-         if(line_count > 0)
-           {
-            StringSplit(line, ',', line_items);
-
-            time_temp_struct.year = (int)StringToInteger(line_items[1]);
-            time_temp_struct.mon = (int)StringToInteger(line_items[2]);
-            time_temp_struct.day = (int)StringToInteger(line_items[3]);
-            time_temp_struct.hour = (int)StringToInteger(line_items[4]);
-            time_temp_struct.min = (int)StringToInteger(line_items[5]);
-            news_struc_temp.time = StructToTime(time_temp_struct);
-
-            news_struc_temp.title = line_items[6];
-            news_struc_temp.impact = line_items[7];
-            if(ArraySize(line_items) > 9) {
-               news_struc_temp.mean_im_profit_pp = StringToDouble(line_items[8]);
-               news_struc_temp.max_spread_pp = StringToDouble(line_items[9]);
-               news_struc_temp.std_im_profit_pp = StringToDouble(line_items[10]);
-            }
-
-            ArrayResize(news_list, ArraySize(news_list) + 1);
-            news_list[ArraySize(news_list) - 1] = news_struc_temp;
-           }
-         else
-           {
-            line_count++;
-           }
-        }
-      FileClose(csv_file_handle);
-      return true;
-     }
-  }
-//+------------------------------------------------------------------+
 
 //+------------------------------------------------------------------+
 //|                                                                  |

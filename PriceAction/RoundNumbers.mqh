@@ -30,7 +30,7 @@ void find_major_and_minor_round_levels_pips(int &major_level_pips, int &minor_le
     ArraySetAsSeries(close_price_array, true);
     int copied = CopyClose(_Symbol, PERIOD_M15, one_month_ago, current_time, close_price_array);
     if(copied <= 0) {
-        Alert("Error: Failed to copy close prices");
+        MessageBox("Error: Failed to copy close prices");
         major_level_pips = 100;
         minor_level_pips = 20;
         return;
@@ -48,7 +48,7 @@ void find_major_and_minor_round_levels_pips(int &major_level_pips, int &minor_le
     }
 
     if(ArraySize(swing_points) == 0) {
-        Alert("Warning: No swing points found");
+        MessageBox("Warning: No swing points found");
         major_level_pips = 100;
         minor_level_pips = 20;
         return;
