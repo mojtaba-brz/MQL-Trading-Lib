@@ -14,7 +14,7 @@
 #define LONDON_SESSION_START_HOUR_FOREX (10)
 #define LONDON_SESSION_END_HOUR_FOREX (19)
 #define NY_SESSION_START_HOUR_FOREX (15)
-#define NY_SESSION_END_HOUR_FOREX (0)
+#define NY_SESSION_END_HOUR_FOREX (23)
 
 #define SYDNEY_SESSION_START_HOUR_NY (17)
 #define SYDNEY_SESSION_END_HOUR_NY (2)
@@ -30,6 +30,14 @@
 #define FOREX_TIME_OFFSET_HOUR (3)
 #define FOREX_TIME_OFFSET_SEC (FOREX_TIME_OFFSET_HOUR * ONE_HOUR_SEC)
 #define ONE_DAY_SEC (24 * ONE_HOUR_SEC)
+
+enum SessionEnum {
+    SESSION_SYDNEY,
+    SESSION_JAPAN,
+    SESSION_LONDON,
+    SESSION_NY,
+    SESSION_ALL
+};
 
 //+------------------------------------------------------------------+
 //|                                                                  |
@@ -91,5 +99,33 @@ int get_ny_day_light_saving_offset_sec(datetime current_time_ny = 0)
     }
 
     return 0;
+}
+//+------------------------------------------------------------------+
+
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
+bool is_in_session(SessionEnum session_name)
+{
+    MqlDateTime current_time_struct;
+    TimeCurrent(current_time_struct);
+    switch(session_name) {
+    case SESSION_JAPAN:
+        return current_time_struct.hour < JAPAN_SESSION_END_HOUR_FOREX && current_time_struct.hour >= JAPAN_SESSION_START_HOUR_FOREX;
+        break;
+    case SESSION_SYDNEY:
+        return current_time_struct.hour < SYDNEY_SESSION_END_HOUR_FOREX && current_time_struct.hour >= SYDNEY_SESSION_START_HOUR_FOREX;
+        break;
+    case SESSION_LONDON:
+        return current_time_struct.hour < LONDON_SESSION_END_HOUR_FOREX && current_time_struct.hour >= LONDON_SESSION_START_HOUR_FOREX;
+        break;
+    case SESSION_NY:
+        return current_time_struct.hour < NY_SESSION_END_HOUR_FOREX && current_time_struct.hour >= NY_SESSION_START_HOUR_FOREX;
+        break;
+    case  SESSION_ALL:
+    default:
+        return true;
+        break;
+    }
 }
 //+------------------------------------------------------------------+

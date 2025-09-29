@@ -6,6 +6,7 @@
 #include "../ArrayFunctions.mqh"
 #include "../typedefs.mqh"
 #include "../IndicatorUtils.mqh"
+#include "../IndicatorReplacemnts/IndicatorReplacemnts.mqh"
 
 #define MAJOR_LEVEL_RESOLUTION_PIPS (10)
 
@@ -18,7 +19,7 @@ struct LevelValidityStruct {
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-void find_major_and_minor_round_levels_pips(int &major_level_pips, int &minor_level_pips, int &ind_atr_handle)
+void find_major_and_minor_round_levels_pips(int &major_level_pips, int &minor_level_pips)
 {
     LevelValidityStruct found_level_validity_array[], new_validity_level_data;
     double close_price_array[], swing_points[], level;
@@ -53,15 +54,16 @@ void find_major_and_minor_round_levels_pips(int &major_level_pips, int &minor_le
         minor_level_pips = 20;
         return;
     }
-
+      
+    double atr_value = get_atr_value(_Symbol, PERIOD_D1, 22, 1);
     int price_to_pip_multiplier = (int)MathRound(MathPow(10, SymbolInfoInteger(_Symbol, SYMBOL_DIGITS) - 1));
     major_level_pips = 50;
     best_major_level_pips = major_level_pips;
     best_minor_level_pips = major_level_pips / 5;
     double best_levels_loss = MAX_DOUBLE_VALUE;
-    int max_major_level = (int)MathRound(1.5 * convert_price_to_pips(get_indicator_value(ind_atr_handle)));
+    int max_major_level = (int)MathRound(1.5 * convert_price_to_pips(atr_value));
     max_major_level = max_major_level + (MAJOR_LEVEL_RESOLUTION_PIPS - (max_major_level % MAJOR_LEVEL_RESOLUTION_PIPS));
-    int major_level_pips_start_value = MathMax((int)MathRound(0.85 * convert_price_to_pips(get_indicator_value(ind_atr_handle))), 40);
+    int major_level_pips_start_value = MathMax((int)MathRound(0.85 * convert_price_to_pips(atr_value)), 40);
     major_level_pips_start_value -= major_level_pips_start_value % MAJOR_LEVEL_RESOLUTION_PIPS;
     for(major_level_pips = major_level_pips_start_value; major_level_pips <= max_major_level; major_level_pips += MAJOR_LEVEL_RESOLUTION_PIPS) {
         minor_level_pips = major_level_pips / 5;
@@ -103,7 +105,7 @@ void find_major_and_minor_round_levels_pips(int &major_level_pips, int &minor_le
     major_level_pips = best_major_level_pips;
     minor_level_pips = best_minor_level_pips;
 
-    PrintFormat("Major Level: %ipips,  ATR(D1, 22):%i pips", major_level_pips, convert_price_to_pips(get_indicator_value(ind_atr_handle)));
+    PrintFormat("Major Level: %ipips,  ATR(D1, 22):%i pips", major_level_pips, convert_price_to_pips(atr_value));
 }
 //+------------------------------------------------------------------+
 

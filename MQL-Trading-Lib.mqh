@@ -12,6 +12,7 @@
 #include "PriceAction/PriceAction.mqh"
 #include "Drawing/Drawing.mqh"
 #include "Random/Random.mqh"
+#include "IndicatorReplacemnts/IndicatorReplacemnts.mqh"
 
 #include "typedefs.mqh"
 #include "IndicatorUtils.mqh"
