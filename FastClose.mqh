@@ -31,6 +31,7 @@ void close_all_orders(string sym = NULL, long magic_number = 0, OrderCloseMode m
                    OrderGetInteger(ORDER_TYPE) == ORDER_TYPE_BUY_STOP_LIMIT) {
                     trade.OrderDelete(order_ticket);
                 }
+                break;
 
             case ORDER_CLOSE_SELL:
                 if(OrderGetInteger(ORDER_TYPE) == ORDER_TYPE_SELL ||
@@ -72,6 +73,7 @@ void close_all_positions(string sym = NULL, long magic_number = 0, PosCloseMode 
                 if(PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_BUY) {
                     trade.PositionClose(pos_ticket);
                 }
+                break;
 
             case POS_CLOSE_SELL:
                 if(PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_SELL) {
