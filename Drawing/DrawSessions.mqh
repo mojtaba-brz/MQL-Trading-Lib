@@ -41,7 +41,7 @@ void draw_session_on_the_current_chart_if_is_new(string prefix, int start_hour, 
     int lowest_low_idx = ArrayMinimum(lows);
     double tag_price  = lows[lowest_low_idx>=0?lowest_low_idx:0] - one_pip;
 
-    bool session_is_new = ObjectFind(0, tag_name) < 0 ||
+    bool session_is_new = ObjectFind(0, tag_name) < 0 || ObjectFind(0, bg_name) < 0 || ObjectFind(0, brdr_name) < 0 || 
                           ObjectGetInteger(0, tag_name, OBJPROP_TIME) != mid_time;
 
     if(session_is_new) {

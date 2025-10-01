@@ -9,9 +9,9 @@ void draw_major_and_minor_round_number_level_line_if_is_new(string prefix, int m
         string h_line_prefix = prefix + "_" + IntegerToString(i);
         draw_major_level(h_line_prefix, major_level_price_array[i]);
     }
-    for(int i = 0; i < ArraySize(major_level_price_array)-1; i++) {
+    for(int i = 0; i < ArraySize(major_level_price_array) - 1; i++) {
         string h_line_prefix = prefix + "_" + IntegerToString(i);
-        draw_mid_level(h_line_prefix, (major_level_price_array[i]+major_level_price_array[i+1])*0.5);
+        draw_mid_level(h_line_prefix, (major_level_price_array[i] + major_level_price_array[i + 1]) * 0.5);
     }
     for(int i = 0; i < ArraySize(minor_level_price_array); i++) {
         string h_line_prefix = prefix + "_" + IntegerToString(i);
@@ -81,3 +81,4 @@ void draw_minor_level(string prefix, double level_price)
     ObjectSetInteger(0, name, OBJPROP_BACK, 1);
     ObjectSetInteger(0, name, OBJPROP_COLOR, clrOlive);
 }
+//+------------------------------------------------------------------+
