@@ -19,14 +19,14 @@ void draw_session_on_the_current_chart_if_is_new(string prefix, int start_hour, 
     } else {
         end_time = start_of_today_time_sec + end_hour   * 3600 + offset + 24 * 3600;
     }
-    
+
     TimeToStruct(start_time, start_time_struc);
     while(start_time_struc.day_of_week == 0 || start_time_struc.day_of_week == 6) {
-      start_time -= ONE_DAY_SEC;
+        start_time -= ONE_DAY_SEC;
     }
-    
+
     mid_time = int(MathRound((end_time + start_time) * 0.5));
-    
+
     double last_price = iClose(_Symbol, PERIOD_M15, 0);
 
     string bg_name = prefix + session_name;
@@ -35,29 +35,42 @@ void draw_session_on_the_current_chart_if_is_new(string prefix, int start_hour, 
     double lows[];
     double one_pip = 10 * _Point;
     datetime begining_time = MathMin(start_time, start_of_today_time_sec);
-    int success = CopyLow(_Symbol, PERIOD_M15, begining_time, end_time, lows);
-    if(!success) return;
-    
-    int lowest_low_idx = ArrayMinimum(lows);
-    double tag_price  = lows[lowest_low_idx>=0?lowest_low_idx:0] - one_pip;
+    int count = CopyLow(_Symbol, PERIOD_M15, begining_time, end_time, lows);
+    if(count < 1) return;
 
-    bool session_is_new = ObjectFind(0, tag_name) < 0 || ObjectFind(0, bg_name) < 0 || ObjectFind(0, brdr_name) < 0 || 
+    int lowest_low_idx = ArrayMinimum(lows);
+    double tag_price  = lows[lowest_low_idx >= 0 ? lowest_low_idx : 0] - one_pip;
+
+    bool session_is_new = ObjectFind(0, tag_name) < 0 || ObjectFind(0, bg_name) < 0 || ObjectFind(0, brdr_name) < 0 ||
                           ObjectGetInteger(0, tag_name, OBJPROP_TIME) != mid_time;
 
     if(session_is_new) {
         ObjectDelete(0, bg_name);
         ObjectDelete(0, brdr_name);
         ObjectDelete(0, tag_name);
-        ObjectCreate(0, brdr_name, OBJ_RECTANGLE, 0, start_time, last_price * 10, end_time, last_price * -1);
+        ResetLastError();
+        count = 0;
+        while(ObjectFind(0, brdr_name) && count < 50) {
+            ObjectCreate(0, brdr_name, OBJ_RECTANGLE, 0, start_time, last_price * 10, end_time, last_price * -1);
+            count++;
+        }
         ObjectSetInteger(0, brdr_name, OBJPROP_COLOR, brdr_clr);
         ObjectSetInteger(0, bg_name, OBJPROP_FILL, 0);
         ObjectSetInteger(0, brdr_name, OBJPROP_BACK, 1);
         ObjectSetInteger(0, brdr_name, OBJPROP_WIDTH, 5);
-        ObjectCreate(0, bg_name, OBJ_RECTANGLE, 0, start_time, last_price * 10, end_time, last_price * -1);
+        count = 0;
+        while(ObjectFind(0, bg_name) && count < 50) {
+            ObjectCreate(0, bg_name, OBJ_RECTANGLE, 0, start_time, last_price * 10, end_time, last_price * -1);
+            count++;
+        }
         ObjectSetInteger(0, bg_name, OBJPROP_COLOR, bg_clr);
         ObjectSetInteger(0, bg_name, OBJPROP_FILL, 1);
         ObjectSetInteger(0, bg_name, OBJPROP_BACK, 1);
-        ObjectCreate(0, tag_name, OBJ_TEXT, 0, mid_time, tag_price);
+        count = 0;
+        while(ObjectFind(0, tag_name) && count < 50) {
+            ObjectCreate(0, tag_name, OBJ_TEXT, 0, mid_time, tag_price);
+            count++;
+        }
         ObjectSetString(0, tag_name, OBJPROP_TEXT, session_name);
         ObjectSetInteger(0, tag_name, OBJPROP_ALIGN, ALIGN_CENTER);
         ObjectSetInteger(0, tag_name, OBJPROP_ANCHOR, ANCHOR_CENTER);
