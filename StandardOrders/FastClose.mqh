@@ -91,10 +91,8 @@ void close_all_positions(string sym = NULL, long magic_number = 0, PosCloseMode 
 //+------------------------------------------------------------------+
 bool is_there_any_order_or_position(string sym = NULL, long magic_number = 0)
 {
-    if(is_there_any_position(sym, magic_number))
-        return true;
-    if(is_there_any_order(sym, magic_number))
-        return true;
+    if(is_there_any_position(sym, magic_number)) return true;
+    if(is_there_any_order(sym, magic_number))    return true;
     return false;
 }
 

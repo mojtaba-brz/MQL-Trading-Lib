@@ -18,7 +18,5 @@
 #include "typedefs.mqh"
 #include "IndicatorUtils.mqh"
 #include "ExchangeTools.mqh"
-#include "PositionManagementTools.mqh"
-#include "FastClose.mqh"
 #include "ArrayFunctions.mqh"
 #include "Compare.mqh"
