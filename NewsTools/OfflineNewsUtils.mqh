@@ -2,9 +2,9 @@
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-bool parse_news_file(NewsStruct &_news_list[])
+bool parse_news_file(string sym, NewsStruct &_news_list[])
   {
-   string csv_file_name = broker_symbol_to_standard_symbol(_Symbol) + "-NewsIndicatorFile.csv";
+   string csv_file_name = broker_symbol_to_standard_symbol(sym) + "-NewsIndicatorFile.csv";
    ResetLastError();
    int csv_file_handle = FileOpen(csv_file_name, FILE_ANSI | FILE_CSV | FILE_COMMON | FILE_READ, "\n");
    if(csv_file_handle < 0)
@@ -70,4 +70,38 @@ int get_time_to_the_nearest_news_list(long current_time, NewsStruct &_news_list[
         }
     }
     return min_time_to_news;
+}
+
+double get_max_spread_of_the_nearest_news_list(long current_time, NewsStruct &_news_list[], int &last_news_index)
+{
+    int min_time_to_news = INT_MAX;
+    for(int i = last_news_index; i < ArraySize(_news_list); i++) {
+        long news_date_temp = (long)_news_list[i].time;
+        int diff = (int)(news_date_temp - current_time);
+        if(MathAbs(diff) <= MathAbs(min_time_to_news)) {
+            min_time_to_news = diff;
+        } else {
+            last_news_index = i-1;
+            return _news_list[last_news_index].max_spread_pp;
+        }
+    }
+    
+    return _news_list[last_news_index].max_spread_pp;
+}
+
+double get_ave_profit_of_the_nearest_news_list(long current_time, NewsStruct &_news_list[], int &last_news_index)
+{
+    int min_time_to_news = INT_MAX;
+    for(int i = last_news_index; i < ArraySize(_news_list); i++) {
+        long news_date_temp = (long)_news_list[i].time;
+        int diff = (int)(news_date_temp - current_time);
+        if(MathAbs(diff) <= MathAbs(min_time_to_news)) {
+            min_time_to_news = diff;
+        } else {
+            last_news_index = i-1;
+            return _news_list[last_news_index].mean_im_profit_pp;
+        }
+    }
+    
+    return _news_list[last_news_index].mean_im_profit_pp;
 }

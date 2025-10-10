@@ -343,7 +343,7 @@ string broker_symbol_to_standard_symbol(string sym)
    return splited_sym_array[0];
 }
 
-double get_current_price()
+double get_current_price(string sym)
 {
-   return (SymbolInfoDouble(_Symbol, SYMBOL_ASK) + SymbolInfoDouble(_Symbol, SYMBOL_BID)) * 0.5;
+   return (SymbolInfoDouble(sym, SYMBOL_ASK) + SymbolInfoDouble(sym, SYMBOL_BID)) * 0.5;
 }

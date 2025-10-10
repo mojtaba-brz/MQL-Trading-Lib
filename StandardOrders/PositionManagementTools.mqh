@@ -1,9 +1,9 @@
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-#include "MQL_Easy/MQL_Easy/MQL_Easy.mqh"
+#include "../MQL_Easy/MQL_Easy/MQL_Easy.mqh"
 #include "typedefs.mqh"
-#include "ExchangeTools.mqh"
+#include "../ExchangeTools.mqh"
 
 //+------------------------------------------------------------------+
 //|                                                                  |
