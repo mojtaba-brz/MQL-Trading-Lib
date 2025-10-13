@@ -12,6 +12,8 @@
 #define MAX_LONG_VALUE (9223372036854775807)
 #define MIN_LONG_VALUE (-9223372036854775808)
 
+#include "MQL_Easy/MQL_Easy/MQL_Easy.mqh"
+
 enum TradingAction
 {
     TRADING_ACTION_DO_NOTHING,
@@ -66,3 +68,15 @@ struct NewsStruct
    string            title, impact, currency;
    double            mean_im_profit_pp, std_im_profit_pp, max_spread_pp;
   };
+
+struct OrderSpecs {
+    double order_price;
+    ENUM_TYPE_ORDER order_type;
+    ulong  ticket;
+};
+
+struct PosSpecs {
+    double pos_price;
+    ENUM_TYPE_POSITION pos_type;
+    ulong  ticket;
+};

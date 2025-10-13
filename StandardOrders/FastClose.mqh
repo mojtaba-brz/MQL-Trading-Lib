@@ -7,7 +7,7 @@
 #property link      "https://www.mql5.com"
 
 #include <Trade/Trade.mqh>
-#include "typedefs.mqh"
+#include "../typedefs.mqh"
 
 //+------------------------------------------------------------------+
 void close_all_orders(string sym = NULL, long magic_number = 0, OrderCloseMode mode = ORDER_CLOSE_ALL)
@@ -86,6 +86,21 @@ void close_all_positions(string sym = NULL, long magic_number = 0, PosCloseMode 
                 break;
             }
         }
+    }
+}
+
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
+void close_all_positions_in_std_array(PosSpecs &pos_scpecs[])
+{
+    CTrade trade();
+    trade.SetAsyncMode(true);
+    int n_pos = ArraySize(pos_scpecs);
+
+    for(int i = n_pos - 1; i >= 0; i--) {
+        ulong pos_ticket = pos_scpecs[i].ticket;
+        if(PositionSelectByTicket(pos_ticket))  trade.PositionClose(pos_ticket);
     }
 }
 //+------------------------------------------------------------------+
