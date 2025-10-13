@@ -29,7 +29,6 @@ datetime pre_obj_time = 0;
 int OnInit()
    {
     ArrayFree(sym_array);
-    Comment("Initialization...");
     while(!ffn_handler.update_news());
     switch(symbol_mode)
        {
@@ -63,7 +62,6 @@ int OnInit()
        }
     news_index = 0;
     pre_obj_time = 0;
-    Comment("Done...");
     return(INIT_SUCCEEDED);
    }
 //+------------------------------------------------------------------+
@@ -73,7 +71,6 @@ void OnTick() {}
 //+------------------------------------------------------------------+
 void OnDeinit(const int reason)
    {
-    Comment("");
     ObjectsDeleteAll(0, MS_NEWS_INDICATOR_PREFIX);
    }
 //+------------------------------------------------------------------+
