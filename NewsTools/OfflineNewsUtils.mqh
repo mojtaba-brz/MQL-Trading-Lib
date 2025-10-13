@@ -12,10 +12,9 @@ bool parse_news_file(string sym, NewsStruct &_news_list[])
     string csv_file_name = broker_symbol_to_standard_symbol(sym) + "-NewsIndicatorFile.csv";
     ResetLastError();
     int csv_file_handle = -1, counter = 0;
-    while (csv_file_handle < 0 && counter < 20) {
+    while (csv_file_handle < 0 && counter < 500000) {
         csv_file_handle = FileOpen(csv_file_name, FILE_ANSI | FILE_CSV | FILE_COMMON | FILE_READ, "\n");
         counter++;
-        Sleep(10);
     }
     if(csv_file_handle < 0) {
         Print("Could not read " + csv_file_name + ". Error : " + IntegerToString(GetLastError()));
@@ -38,6 +37,7 @@ bool parse_news_file(string sym, NewsStruct &_news_list[])
                 time_temp_struct.day = (int)StringToInteger(line_items[3]);
                 time_temp_struct.hour = (int)StringToInteger(line_items[4]);
                 time_temp_struct.min = (int)StringToInteger(line_items[5]);
+                time_temp_struct.sec = 0;
                 news_struc_temp.time = StructToTime(time_temp_struct);
 
                 news_struc_temp.title = line_items[6];
