@@ -1,7 +1,7 @@
 #include "ForexFactoryNews.mqh"
 #include "OfflineNewsUtils.mqh"
 
-void highlight_news_on_the_chart(string pre_fix, ForexFactoryNews &news, datetime &_pre_obj_time, int &_news_index, double price = 0.)
+void highlight_news_on_the_chart(string pre_fix, ForexFactoryNews &news, datetime &_pre_obj_time, int &_news_index, double price = 0., color v_line_color = clrRed)
    {
     if(_pre_obj_time == news.release_time) {
         string object_name = pre_fix + IntegerToString(_news_index) + " - ";
@@ -14,6 +14,7 @@ void highlight_news_on_the_chart(string pre_fix, ForexFactoryNews &news, datetim
     ObjectCreate(0, object_name, OBJ_VLINE, 0, news.release_time, price);
     ObjectSetInteger(0, object_name, OBJPROP_BACK, true);
     ObjectSetInteger(0, object_name, OBJPROP_STYLE, STYLE_DASH);
+    ObjectSetInteger(0, object_name, OBJPROP_COLOR, v_line_color);
 
     ObjectCreate(0, object_name + "_label", OBJ_TEXT, 0, news.release_time, price);
     ObjectSetString(0, object_name + "_label", OBJPROP_TEXT, news.currency + " - " + news.title);

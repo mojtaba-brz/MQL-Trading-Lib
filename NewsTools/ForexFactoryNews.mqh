@@ -160,6 +160,8 @@ bool ForexFactoryNewsHandlerClass::in_filtered_news_zone(int time_margin_left_s,
 //+------------------------------------------------------------------+
 int ForexFactoryNewsHandlerClass::get_time_to_the_nearest_news(long current_time)
 {
+    if(ArraySize(filtered_forex_factory_news) == 0) return INT_MAX;
+    
     int min_time_to_news = INT_MAX;
     long news_date_temp;
     for(int i = 0; i < ArraySize(filtered_forex_factory_news); i++) {
@@ -178,6 +180,8 @@ int ForexFactoryNewsHandlerClass::get_time_to_the_nearest_news(long current_time
 //+------------------------------------------------------------------+
 double ForexFactoryNewsHandlerClass::get_max_spread_of_the_nearest_news(long current_time)
 {
+    if(ArraySize(filtered_forex_factory_news) == 0) return INT_MAX;
+
     int min_time_to_news = INT_MAX;
     long news_date_temp;
     int i = 0;
@@ -197,6 +201,8 @@ double ForexFactoryNewsHandlerClass::get_max_spread_of_the_nearest_news(long cur
 //+------------------------------------------------------------------+
 double ForexFactoryNewsHandlerClass::get_ave_profit_of_the_nearest_news(long current_time)
 {
+    if(ArraySize(filtered_forex_factory_news) == 0) return INT_MAX;
+
     int min_time_to_news = INT_MAX;
     long news_date_temp;
     if(ArraySize(filtered_forex_factory_news) == 0) return 0;
