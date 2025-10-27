@@ -6,11 +6,11 @@ double get_atr_value(string sym, ENUM_TIMEFRAMES timeframe = PERIOD_D1, int peri
     MqlRates rates[];
     double sum_true_range = 0;
     int counter = 0;
-    while(CopyRates(sym, timeframe, shift, period, rates) < period && counter < 20) {
+    while(CopyRates(sym, timeframe, shift, period, rates) < period && counter < 2000) {
         counter++;
-        Sleep(10);
+        Sleep(1);
     }
-    if(counter < 20) {
+    if(counter < 2000) {
         for(int i = 0; i < period; i++) {
             sum_true_range += (rates[i].high - rates[i].low);
         }
