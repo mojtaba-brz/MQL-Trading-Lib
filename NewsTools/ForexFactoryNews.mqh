@@ -29,16 +29,16 @@ class ForexFactoryNewsHandlerClass
 {
 private:
     int               num_of_news;
-    
+
     string            news_filter_currencies[],
                       news_filter_titles[];
-    
+
     NewsImpact        news_filter_impact[];
 
     double            news_mean_im_profit[],
                       news_max_spread[],
                       news_std_im_profit[];
-    
+
     datetime          _last_ffn_request_time;
 
 public:
@@ -70,10 +70,11 @@ bool ForexFactoryNewsHandlerClass::update_news()
     bool news_are_already_abailable = read_last_news_file_if_it_is_available(server_resp);
     datetime current_server_time = TimeCurrent();
 
-    if(current_server_time > (_last_ffn_request_time + 6 * 60)) { // Last time + 6min to avoid request rejections by FF server
-        http_code = news_are_already_abailable ?
-                    200 :
-                    WebRequest("GET", "https://nfs.faireconomy.media/ff_calendar_thisweek.json", NULL, 20, data, server_resp, header);
+    if(news_are_already_abailable) {
+        http_code = 200;
+    }
+    else if(current_server_time > (_last_ffn_request_time + 6 * 60)) { // Last time + 6min to avoid request rejections by FF server
+        http_code = WebRequest("GET", "https://nfs.faireconomy.media/ff_calendar_thisweek.json", NULL, 20, data, server_resp, header);
     } else {
         PrintFormat("Forex Factory Too Frequent Requests... Remained wating time: %i sec", ((_last_ffn_request_time + 6 * 60) - current_server_time));
         return false;
@@ -161,7 +162,7 @@ bool ForexFactoryNewsHandlerClass::in_filtered_news_zone(int time_margin_left_s,
 int ForexFactoryNewsHandlerClass::get_time_to_the_nearest_news(long current_time)
 {
     if(ArraySize(filtered_forex_factory_news) == 0) return INT_MAX;
-    
+
     int min_time_to_news = INT_MAX;
     long news_date_temp;
     for(int i = 0; i < ArraySize(filtered_forex_factory_news); i++) {
@@ -190,10 +191,10 @@ double ForexFactoryNewsHandlerClass::get_max_spread_of_the_nearest_news(long cur
         if(MathAbs(news_date_temp - current_time) <= MathAbs(min_time_to_news)) {
             min_time_to_news = (int)(news_date_temp - current_time);
         } else {
-            return filtered_forex_factory_news[i-1].max_spread_pp;
+            return filtered_forex_factory_news[i - 1].max_spread_pp;
         }
     }
-    return filtered_forex_factory_news[i-1].max_spread_pp;
+    return filtered_forex_factory_news[i - 1].max_spread_pp;
 }
 
 //+------------------------------------------------------------------+
@@ -212,10 +213,10 @@ double ForexFactoryNewsHandlerClass::get_ave_profit_of_the_nearest_news(long cur
         if(MathAbs(news_date_temp - current_time) <= MathAbs(min_time_to_news)) {
             min_time_to_news = (int)(news_date_temp - current_time);
         } else {
-            return filtered_forex_factory_news[i-1].mean_im_profit_pp;
+            return filtered_forex_factory_news[i - 1].mean_im_profit_pp;
         }
     }
-    return filtered_forex_factory_news[i-1].mean_im_profit_pp;
+    return filtered_forex_factory_news[i - 1].mean_im_profit_pp;
 }
 
 //+------------------------------------------------------------------+
@@ -353,7 +354,7 @@ datetime get_last_date_time_of_week()
 
 //+------------------------------------------------------------------+
 void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bool alert_if_no_filter_exists)
-   {
+{
 
     ArrayFree(news_filter_currencies);
     ArrayFree(news_filter_titles);
@@ -783,7 +784,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_max_spread[68] = 1.89837;
         news_std_im_profit[68] = 0.71596;
         return;
-       }
+    }
 
     if(StringCompare(sym, "AUDCHF") == 0) {
         ArrayResize(news_filter_currencies, 61);
@@ -1159,7 +1160,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_max_spread[60] = 2.67533;
         news_std_im_profit[60] = 2.07147;
         return;
-       }
+    }
 
     if(StringCompare(sym, "AUDJPY") == 0) {
         ArrayResize(news_filter_currencies, 61);
@@ -1535,7 +1536,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_max_spread[60] = 15.12525;
         news_std_im_profit[60] = 18.06965;
         return;
-       }
+    }
 
     if(StringCompare(sym, "AUDNZD") == 0) {
         ArrayResize(news_filter_currencies, 65);
@@ -1935,7 +1936,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_max_spread[64] = 7.10050;
         news_std_im_profit[64] = 14.68173;
         return;
-       }
+    }
 
     if(StringCompare(sym, "AUDUSD") == 0) {
         ArrayResize(news_filter_currencies, 56);
@@ -2281,7 +2282,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_max_spread[55] = 1.88039;
         news_std_im_profit[55] = 5.93353;
         return;
-       }
+    }
 
     if(StringCompare(sym, "CADCHF") == 0) {
         ArrayResize(news_filter_currencies, 61);
@@ -2657,7 +2658,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_max_spread[60] = 6.31451;
         news_std_im_profit[60] = 2.95430;
         return;
-       }
+    }
 
     if(StringCompare(sym, "CADJPY") == 0) {
         ArrayResize(news_filter_currencies, 61);
@@ -3033,7 +3034,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_max_spread[60] = 7.96933;
         news_std_im_profit[60] = 7.65668;
         return;
-       }
+    }
 
     if(StringCompare(sym, "CHFJPY") == 0) {
         ArrayResize(news_filter_currencies, 53);
@@ -3361,7 +3362,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_max_spread[52] = 2.08460;
         news_std_im_profit[52] = 5.16560;
         return;
-       }
+    }
 
     if(StringCompare(sym, "EURAUD") == 0) {
         ArrayResize(news_filter_currencies, 67);
@@ -3773,7 +3774,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_max_spread[66] = 1.33336;
         news_std_im_profit[66] = 1.39510;
         return;
-       }
+    }
 
     if(StringCompare(sym, "EURCAD") == 0) {
         ArrayResize(news_filter_currencies, 67);
@@ -4185,7 +4186,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_max_spread[66] = 3.36121;
         news_std_im_profit[66] = 2.46901;
         return;
-       }
+    }
 
     if(StringCompare(sym, "EURCHF") == 0) {
         ArrayResize(news_filter_currencies, 59);
@@ -4549,7 +4550,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_max_spread[58] = 18.59497;
         news_std_im_profit[58] = 23.40479;
         return;
-       }
+    }
 
     if(StringCompare(sym, "EURGBP") == 0) {
         ArrayResize(news_filter_currencies, 67);
@@ -4961,7 +4962,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_max_spread[66] = 2.51357;
         news_std_im_profit[66] = 0.00000;
         return;
-       }
+    }
 
     if(StringCompare(sym, "EURJPY") == 0) {
         ArrayResize(news_filter_currencies, 59);
@@ -5325,7 +5326,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_max_spread[58] = 1.05817;
         news_std_im_profit[58] = 0.00000;
         return;
-       }
+    }
 
     if(StringCompare(sym, "EURNZD") == 0) {
         ArrayResize(news_filter_currencies, 63);
@@ -5713,7 +5714,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_max_spread[62] = 1.67528;
         news_std_im_profit[62] = 2.51018;
         return;
-       }
+    }
 
     if(StringCompare(sym, "EURUSD") == 0) {
         ArrayResize(news_filter_currencies, 54);
@@ -6047,7 +6048,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_max_spread[53] = 1.19775;
         news_std_im_profit[53] = 0.00000;
         return;
-       }
+    }
 
     if(StringCompare(sym, "GBPAUD") == 0) {
         ArrayResize(news_filter_currencies, 69);
@@ -6471,7 +6472,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_max_spread[68] = 1.38747;
         news_std_im_profit[68] = 0.00000;
         return;
-       }
+    }
 
     if(StringCompare(sym, "GBPCAD") == 0) {
         ArrayResize(news_filter_currencies, 69);
@@ -6895,7 +6896,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_max_spread[68] = 7.41707;
         news_std_im_profit[68] = 8.23045;
         return;
-       }
+    }
 
     if(StringCompare(sym, "GBPCHF") == 0) {
         ArrayResize(news_filter_currencies, 61);
@@ -7271,7 +7272,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_max_spread[60] = 1.52373;
         news_std_im_profit[60] = 0.00000;
         return;
-       }
+    }
 
     if(StringCompare(sym, "GBPJPY") == 0) {
         ArrayResize(news_filter_currencies, 61);
@@ -7647,7 +7648,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_max_spread[60] = 1.13337;
         news_std_im_profit[60] = 0.00000;
         return;
-       }
+    }
 
     if(StringCompare(sym, "GBPNZD") == 0) {
         ArrayResize(news_filter_currencies, 65);
@@ -8047,7 +8048,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_max_spread[64] = 12.00052;
         news_std_im_profit[64] = 17.00496;
         return;
-       }
+    }
 
     if(StringCompare(sym, "GBPUSD") == 0) {
         ArrayResize(news_filter_currencies, 56);
@@ -8393,7 +8394,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_max_spread[55] = 1.32263;
         news_std_im_profit[55] = 1.34422;
         return;
-       }
+    }
 
     if(StringCompare(sym, "NZDCAD") == 0) {
         ArrayResize(news_filter_currencies, 65);
@@ -8793,7 +8794,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_max_spread[64] = 5.09003;
         news_std_im_profit[64] = 3.10085;
         return;
-       }
+    }
 
     if(StringCompare(sym, "NZDCHF") == 0) {
         ArrayResize(news_filter_currencies, 57);
@@ -9145,7 +9146,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_max_spread[56] = 4.67261;
         news_std_im_profit[56] = 4.65907;
         return;
-       }
+    }
 
     if(StringCompare(sym, "NZDJPY") == 0) {
         ArrayResize(news_filter_currencies, 57);
@@ -9497,7 +9498,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_max_spread[56] = 2.42943;
         news_std_im_profit[56] = 2.76018;
         return;
-       }
+    }
 
     if(StringCompare(sym, "NZDUSD") == 0) {
         ArrayResize(news_filter_currencies, 52);
@@ -9819,7 +9820,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_max_spread[51] = 7.55966;
         news_std_im_profit[51] = 10.40871;
         return;
-       }
+    }
 
     if(StringCompare(sym, "USDCAD") == 0) {
         ArrayResize(news_filter_currencies, 56);
@@ -10165,7 +10166,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_max_spread[55] = 5.41342;
         news_std_im_profit[55] = 7.55435;
         return;
-       }
+    }
 
     if(StringCompare(sym, "USDCHF") == 0) {
         ArrayResize(news_filter_currencies, 48);
@@ -10463,7 +10464,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_max_spread[47] = 1.32920;
         news_std_im_profit[47] = 5.64172;
         return;
-       }
+    }
 
     if(StringCompare(sym, "USDJPY") == 0) {
         ArrayResize(news_filter_currencies, 48);
@@ -10761,7 +10762,7 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_max_spread[47] = 1.86442;
         news_std_im_profit[47] = 0.00000;
         return;
-       }
+    }
 
     if(StringCompare(sym, "XAUUSD") == 0) {
         ArrayResize(news_filter_currencies, 43);
@@ -11029,9 +11030,9 @@ void ForexFactoryNewsHandlerClass::update_news_filter_with_symbol(string sym, bo
         news_max_spread[42] = 3.04269;
         news_std_im_profit[42] = 0.00000;
         return;
-       }
+    }
 
     if(alert_if_no_filter_exists)
         Alert("No news filter was found for ", sym);
-   }
+}
 //+------------------------------------------------------------------+

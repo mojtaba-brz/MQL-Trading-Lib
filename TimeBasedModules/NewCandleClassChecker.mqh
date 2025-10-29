@@ -4,7 +4,7 @@
 class NewCandleClassChecker
 {
 public:
-    NewCandleClassChecker(ENUM_TIMEFRAMES period = PERIOD_M1): last_candle_time(0)
+    NewCandleClassChecker(ENUM_TIMEFRAMES period = PERIOD_M1): _last_candle_time(0)
     {
         _period = period;
     }
@@ -12,9 +12,10 @@ public:
     
     void set_params(ENUM_TIMEFRAMES period = PERIOD_M1);
     bool check_step();
+    void reset();
 private:
     ENUM_TIMEFRAMES _period;
-    datetime last_candle_time;
+    datetime _last_candle_time;
 };
 
 //+------------------------------------------------------------------+
@@ -26,9 +27,14 @@ void NewCandleClassChecker::set_params(ENUM_TIMEFRAMES period)
 bool NewCandleClassChecker::check_step()
 {
     datetime current_candle_time = iTime(_Symbol, _period, 0);
-    if(last_candle_time < current_candle_time){
-        last_candle_time = current_candle_time;
+    if(_last_candle_time < current_candle_time){
+        _last_candle_time = current_candle_time;
         return true;
     }
     return false;
+}
+
+void NewCandleClassChecker::reset()
+{
+    _last_candle_time = 0;
 }
