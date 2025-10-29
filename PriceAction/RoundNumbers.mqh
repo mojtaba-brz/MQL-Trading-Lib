@@ -29,8 +29,9 @@ void find_major_and_minor_round_levels_pips(string sym, int &major_level_pips, i
     datetime current_time = TimeCurrent();
     datetime one_month_ago = current_time - 30 * 24 * 3600;
     ArraySetAsSeries(close_price_array, true);
-    int copied = CopyClose(sym, PERIOD_M15, one_month_ago, current_time, close_price_array);
-    if(copied <= 0) {
+    int count = 0;
+    while(CopyClose(sym, PERIOD_M15, one_month_ago, current_time, close_price_array) < 0 && count < 1000) count++;
+    if(count >= 1000) {
         MessageBox("Error: Failed to copy close prices");
         major_level_pips = 100;
         minor_level_pips = 20;
