@@ -18,6 +18,5 @@ double get_atr_value(string sym, ENUM_TIMEFRAMES timeframe = PERIOD_D1, int peri
         MessageBox("No Rates found...Function:get_atr_value.\nRefresh the chart please.");
     }
     return sum_true_range / period;
-
 }
 //+------------------------------------------------------------------+
