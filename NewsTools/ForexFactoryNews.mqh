@@ -294,10 +294,10 @@ ForexFactoryNews parse_single_ff_news_string(string news)
 //+------------------------------------------------------------------+
 bool read_last_news_file_if_it_is_available(char &server_resp[])
 {
-    string last_datime_str = TimeToString(get_last_date_time_of_week()),
-           last_day_and_time[];
-    StringSplit(last_datime_str, ' ', last_day_and_time);
-    string file_name = "downloaded_news_file_" + last_day_and_time[0] + ".txt";
+    string current_datime_str = TimeToString(TimeCurrent()),
+           current_day_and_time[];
+    StringSplit(current_datime_str, ' ', current_day_and_time);
+    string file_name = "downloaded_news_file_" + current_day_and_time[0] + ".txt";
     int file_handle = FileOpen(file_name, FILE_READ | FILE_TXT);
     if(file_handle < 0) {
         Print("News was not read from file : " + file_name);
@@ -313,10 +313,10 @@ bool read_last_news_file_if_it_is_available(char &server_resp[])
 //+------------------------------------------------------------------+
 void save_news_json_file(char &server_resp[])
 {
-    string last_datime_str = TimeToString(get_last_date_time_of_week()),
-           last_day_and_time[];
-    StringSplit(last_datime_str, ' ', last_day_and_time);
-    string file_name = "downloaded_news_file_" + last_day_and_time[0] + ".txt";
+    string current_datime_str = TimeToString(get_last_date_time_of_week()),
+           current_day_and_time[];
+    StringSplit(current_datime_str, ' ', current_day_and_time);
+    string file_name = "downloaded_news_file_" + current_day_and_time[0] + ".txt";
     int file_handle = FileOpen(file_name, FILE_WRITE | FILE_TXT);
     if(file_handle < 0) {
         Print("News was not saved in file : " + file_name);
