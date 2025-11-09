@@ -70,13 +70,13 @@ struct NewsStruct
   };
 
 struct OrderSpecs {
-    double order_price;
+    double order_price, sl;
     ENUM_TYPE_ORDER order_type;
     ulong  ticket;
 };
 
 struct PosSpecs {
-    double pos_price;
+    double pos_price, sl, tp;
     ENUM_TYPE_POSITION pos_type;
     ulong  ticket;
 };
