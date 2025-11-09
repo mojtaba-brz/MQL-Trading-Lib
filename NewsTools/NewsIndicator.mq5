@@ -38,7 +38,7 @@ int last_news_idx;
 //+------------------------------------------------------------------+
 int OnInit()
   {
-   if(!parse_news_file(news_list))
+   if(!parse_news_file(_Symbol, news_list))
       return INIT_FAILED;
       
    SetIndexBuffer(0, is_there_news, INDICATOR_DATA);
