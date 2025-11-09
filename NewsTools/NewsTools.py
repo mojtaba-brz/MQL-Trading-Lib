@@ -80,7 +80,7 @@ def update_news_in_forex_analyzer_till_yesterday() :
     expected_last_available_news_date = pd.Timestamp.today().normalize()
     if last_available_news_date.to_datetime64() < expected_last_available_news_date.to_datetime64():
         start_date = pd.Timestamp(last_available_news_date.to_datetime64() + 24 * 60 * 60)
-        command = f"python \"{os.path.join(f"{this_file_address}", "..", "..", "ForexAnalyzer", "News", "ForexFactoryScraper.py")}\""
+        command = "python \"" + os.path.join(this_file_address, "..", "..", "ForexAnalyzer", "News", "ForexFactoryScraper.py") + "\""
         command += f" {start_date.day} {start_date.month} {start_date.year}"
         command += f" {expected_last_available_news_date.day} {expected_last_available_news_date.month} {expected_last_available_news_date.year}"
         os.system(command)
