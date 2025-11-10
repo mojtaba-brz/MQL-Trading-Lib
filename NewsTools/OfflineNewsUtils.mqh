@@ -152,10 +152,13 @@ string get_nearest_news_list_str_from_news_list(long current_time, NewsStruct &_
     datetime news_time = _news_list[idx].time;
 
     while(idx >= 0 && news_time == _news_list[idx].time) {
-        nearest_news_list += _news_list[idx].title + " ";
+        nearest_news_list += "\'" + _news_list[idx].title + "\'" + ";";
         idx--;
     }
-
+    if(StringLen(nearest_news_list) > 80) {
+        Print(StringLen(nearest_news_list));
+    }
+    nearest_news_list = StringSubstr(nearest_news_list, 0, StringLen(nearest_news_list) - 1);
     nearest_news_list += "]";
 
     return nearest_news_list;
