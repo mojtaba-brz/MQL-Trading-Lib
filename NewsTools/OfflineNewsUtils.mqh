@@ -66,7 +66,7 @@ bool parse_news_file(string sym, NewsStruct &_news_list[])
 int get_time_to_the_nearest_news_list(long current_time, NewsStruct &_news_list[], int &last_news_index)
 {
     if(ArraySize(_news_list) == 0) return -1;
-    
+
     int min_time_to_news = INT_MAX;
     for(int i = last_news_index; i < ArraySize(_news_list); i++) {
         long news_date_temp = (long)_news_list[i].time;
@@ -88,7 +88,7 @@ int get_time_to_the_nearest_news_list(long current_time, NewsStruct &_news_list[
 double get_max_spread_of_the_nearest_news_list(long current_time, NewsStruct &_news_list[], int &last_news_index)
 {
     if(ArraySize(_news_list) == 0) return -1;
-    
+
     int min_time_to_news = INT_MAX;
     for(int i = last_news_index; i < ArraySize(_news_list); i++) {
         long news_date_temp = (long)_news_list[i].time;
@@ -126,5 +126,38 @@ double get_ave_profit_of_the_nearest_news_list(long current_time, NewsStruct &_n
 
     last_news_index = MathMax(0, MathMin(last_news_index, ArraySize(_news_list) - 1));
     return _news_list[last_news_index].mean_im_profit_pp;
+}
+
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
+string get_nearest_news_list_str_from_news_list(long current_time, NewsStruct &_news_list[], int &last_news_index)
+{
+    if(ArraySize(_news_list) == 0) return "";
+
+    int min_time_to_news = INT_MAX;
+    for(int i = last_news_index; i < ArraySize(_news_list); i++) {
+        long news_date_temp = (long)_news_list[i].time;
+        int diff = (int)(news_date_temp - current_time);
+        if(MathAbs(diff) > MathAbs(min_time_to_news)) {
+            last_news_index = i - 1;
+            break;
+        }
+    }
+
+    last_news_index = MathMax(0, MathMin(last_news_index, ArraySize(_news_list) - 1));
+
+    string nearest_news_list = "[";
+    int idx = last_news_index;
+    datetime news_time = _news_list[idx].time;
+
+    while(idx >= 0 && news_time == _news_list[idx].time) {
+        nearest_news_list += _news_list[idx].title + " ";
+        idx--;
+    }
+
+    nearest_news_list += "]";
+
+    return nearest_news_list;
 }
 //+------------------------------------------------------------------+

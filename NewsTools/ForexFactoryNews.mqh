@@ -57,6 +57,7 @@ public:
     int               get_time_to_the_nearest_news(long current_time);
     double            get_max_spread_of_the_nearest_news(long current_time);
     double            get_ave_profit_of_the_nearest_news(long current_time);
+    string            get_nearest_news_list_str(long current_time);
 };
 
 //+------------------------------------------------------------------+
@@ -72,8 +73,7 @@ bool ForexFactoryNewsHandlerClass::update_news()
 
     if(news_are_already_abailable) {
         http_code = 200;
-    }
-    else if(current_server_time > (_last_ffn_request_time + 6 * 60)) { // Last time + 6min to avoid request rejections by FF server
+    } else if(current_server_time > (_last_ffn_request_time + 6 * 60)) { // Last time + 6min to avoid request rejections by FF server
         http_code = WebRequest("GET", "https://nfs.faireconomy.media/ff_calendar_thisweek.json", NULL, 20, data, server_resp, header);
     } else {
         PrintFormat("Forex Factory Too Frequent Requests... Remained wating time: %i sec", ((_last_ffn_request_time + 6 * 60) - current_server_time));
@@ -217,6 +217,40 @@ double ForexFactoryNewsHandlerClass::get_ave_profit_of_the_nearest_news(long cur
         }
     }
     return filtered_forex_factory_news[i - 1].mean_im_profit_pp;
+}
+
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
+string ForexFactoryNewsHandlerClass::get_nearest_news_list_str(long current_time)
+{
+    if(ArraySize(filtered_forex_factory_news) == 0) return "";
+
+    int min_time_to_news = INT_MAX;
+    long news_date_temp;
+    if(ArraySize(filtered_forex_factory_news) == 0) return "";
+    int i = 1;
+    for(i = 0; i < ArraySize(filtered_forex_factory_news); i++) {
+        news_date_temp = (long)filtered_forex_factory_news[i].release_time;
+        if(MathAbs(news_date_temp - current_time) > MathAbs(min_time_to_news)) {
+            i--;
+            break;
+        }
+    }
+
+    i = MathMax(0, MathMin(i, ArraySize(filtered_forex_factory_news) - 1));
+
+    string nearest_news_list = "[";
+    datetime news_time = filtered_forex_factory_news[i].release_time;
+
+    while(i >= 0 && news_time == filtered_forex_factory_news[i].release_time) {
+        nearest_news_list += filtered_forex_factory_news[i].title + " ";
+        i--;
+    }
+
+    nearest_news_list += "]";
+
+    return nearest_news_list;
 }
 
 //+------------------------------------------------------------------+
