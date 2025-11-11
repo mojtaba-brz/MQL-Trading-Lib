@@ -244,10 +244,12 @@ string ForexFactoryNewsHandlerClass::get_nearest_news_list_str(long current_time
     datetime news_time = filtered_forex_factory_news[i].release_time;
 
     while(i >= 0 && news_time == filtered_forex_factory_news[i].release_time) {
-        nearest_news_list += "\'" + filtered_forex_factory_news[i].title + "\'" + ";";
+        string title = filtered_forex_factory_news[i].title;
+        StringReplace(title, "\\", "");
+        nearest_news_list += "\'" + title + "\'" + ";";
         i--;
     }
-    nearest_news_list = StringSubstr(nearest_news_list, 0, StringLen(nearest_news_list)-2);
+    nearest_news_list = StringSubstr(nearest_news_list, 0, StringLen(nearest_news_list) - 2);
     nearest_news_list += "]";
 
     return nearest_news_list;
