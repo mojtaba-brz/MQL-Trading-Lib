@@ -232,7 +232,9 @@ string ForexFactoryNewsHandlerClass::get_nearest_news_list_str(long current_time
     int i = 1;
     for(i = 0; i < ArraySize(filtered_forex_factory_news); i++) {
         news_date_temp = (long)filtered_forex_factory_news[i].release_time;
-        if(MathAbs(news_date_temp - current_time) > MathAbs(min_time_to_news)) {
+        if(MathAbs(news_date_temp - current_time) <= MathAbs(min_time_to_news)) {
+            min_time_to_news = (int)(news_date_temp - current_time);
+        } else {
             i--;
             break;
         }
@@ -249,7 +251,7 @@ string ForexFactoryNewsHandlerClass::get_nearest_news_list_str(long current_time
         nearest_news_list += "\'" + title + "\'" + ";";
         i--;
     }
-    nearest_news_list = StringSubstr(nearest_news_list, 0, StringLen(nearest_news_list) - 2);
+    nearest_news_list = StringSubstr(nearest_news_list, 0, StringLen(nearest_news_list) - 1);
     nearest_news_list += "]";
 
     return nearest_news_list;
@@ -349,7 +351,7 @@ bool read_last_news_file_if_it_is_available(char &server_resp[])
 //+------------------------------------------------------------------+
 void save_news_json_file(char &server_resp[])
 {
-    string current_datime_str = TimeToString(get_last_date_time_of_week()),
+    string current_datime_str = TimeToString(TimeCurrent()),
            current_day_and_time[];
     StringSplit(current_datime_str, ' ', current_day_and_time);
     string file_name = "downloaded_news_file_" + current_day_and_time[0] + ".txt";
