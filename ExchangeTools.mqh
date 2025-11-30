@@ -194,10 +194,10 @@ bool are_all_required_symbols_available()
 string standard_symbol_to_broker_symbol(string standard_symbol)
   {
 
-   int num_all_marketwatch_symbols = SymbolsTotal(true);
+   int num_all_marketwatch_symbols = SymbolsTotal(false);
    for(int i=0; i<num_all_marketwatch_symbols; i++)
      {
-      string symbol = SymbolName(i, true);
+      string symbol = SymbolName(i, false);
       if(StringFind(symbol, standard_symbol) >= 0)
         {
          return symbol;

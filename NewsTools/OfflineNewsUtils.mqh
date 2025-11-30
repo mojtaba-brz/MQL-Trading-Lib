@@ -9,7 +9,12 @@
 //+------------------------------------------------------------------+
 bool parse_news_file(string sym, NewsStruct &_news_list[])
 {
-    string csv_file_name = broker_symbol_to_standard_symbol(sym) + "-NewsIndicatorFile.csv";
+    string csv_file_name;
+    if(StringCompare(sym, "ALL") == 0) {
+        csv_file_name = "ALL-NewsIndicatorFile.csv";
+    } else {
+        csv_file_name = broker_symbol_to_standard_symbol(sym) + "-NewsIndicatorFile.csv";
+    }
     ResetLastError();
     int csv_file_handle = -1, counter = 0;
     while (csv_file_handle < 0 && counter < 500000) {

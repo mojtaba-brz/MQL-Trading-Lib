@@ -50,14 +50,18 @@ public:
     ~ForexFactoryNewsHandlerClass() {}
     bool              update_news();
     bool              in_news_zone(string currency, NewsImpact impact, double time_margin_left_s, double time_margin_right_s);
+    int               get_time_to_the_nearest_news(long current_time, NewsImpact impact = ENUM_NEWS_IMPACT_RED);
+    string            get_nearest_news_list_str(long current_time, NewsImpact impact, int &news_idx);
+
     bool              in_filtered_news_zone(int time_margin_left_s, int time_margin_right_s, datetime &news_date, datetime current_time);
-    void              print_news(int index);
     void              update_news_filter_with_symbol(string sym, bool alert_if_no_filter_exists = true);
     void              filter_the_news();
-    int               get_time_to_the_nearest_news(long current_time);
-    double            get_max_spread_of_the_nearest_news(long current_time);
-    double            get_ave_profit_of_the_nearest_news(long current_time);
-    string            get_nearest_news_list_str(long current_time);
+    int               get_time_to_the_nearest_filtered_news(long current_time);
+    double            get_max_spread_of_the_nearest_filtered_news(long current_time);
+    double            get_ave_profit_of_the_nearest_filtered_news(long current_time);
+    string            get_nearest_filtered_news_list_str(long current_time);
+
+    void              print_news(int index);
 };
 
 //+------------------------------------------------------------------+
@@ -116,6 +120,71 @@ bool ForexFactoryNewsHandlerClass::in_news_zone(string currency, NewsImpact impa
     }
     return false;
 }
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
+int ForexFactoryNewsHandlerClass::get_time_to_the_nearest_news(long current_time, NewsImpact impact = ENUM_NEWS_IMPACT_RED)
+{
+    int min_time_to_news = INT_MAX;
+    if(ArraySize(forex_factory_news) == 0) return min_time_to_news;
+
+    long news_date_temp;
+    for(int i = 0; i < ArraySize(forex_factory_news); i++) {
+        if(forex_factory_news[i].impact != impact) continue;
+
+        news_date_temp = (long)forex_factory_news[i].release_time;
+        if(MathAbs(news_date_temp - current_time) <= MathAbs(min_time_to_news)) {
+            min_time_to_news = (int)(news_date_temp - current_time);
+        } else {
+            return min_time_to_news;
+        }
+    }
+    return min_time_to_news;
+}
+
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
+string ForexFactoryNewsHandlerClass::get_nearest_news_list_str(long current_time, NewsImpact impact, int &_news_idx)
+{
+    if(ArraySize(forex_factory_news) == 0) return "";
+
+    int min_time_to_news = INT_MAX;
+    long news_date_temp;
+    if(ArraySize(forex_factory_news) == 0) return "";
+    int i = 1, pre_i = 0;
+    for(i = 0; i < ArraySize(forex_factory_news); i++) {
+        if(forex_factory_news[i].impact != impact) continue;
+
+        news_date_temp = (long)forex_factory_news[i].release_time;
+        if(MathAbs(news_date_temp - current_time) <= MathAbs(min_time_to_news)) {
+            min_time_to_news = (int)(news_date_temp - current_time);
+        } else {
+            i = pre_i;
+            break;
+        }
+        pre_i = i;
+    }
+
+    i = MathMax(0, MathMin(i, ArraySize(forex_factory_news) - 1));
+    _news_idx = i;
+
+    string nearest_news_list = "[";
+    datetime news_time = forex_factory_news[i].release_time;
+
+    while(i >= 0 && news_time == forex_factory_news[i].release_time) {
+        if(forex_factory_news[i].impact == impact) {
+            string title = forex_factory_news[i].title;
+            StringReplace(title, "\\", "");
+            nearest_news_list += "\'" + title + "\'" + ";";
+        }
+        i--;
+    }
+    nearest_news_list = StringSubstr(nearest_news_list, 0, StringLen(nearest_news_list) - 1);
+    nearest_news_list += "]";
+
+    return nearest_news_list;
+}
 
 //+------------------------------------------------------------------+
 //|                                                                  |
@@ -159,7 +228,7 @@ bool ForexFactoryNewsHandlerClass::in_filtered_news_zone(int time_margin_left_s,
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-int ForexFactoryNewsHandlerClass::get_time_to_the_nearest_news(long current_time)
+int ForexFactoryNewsHandlerClass::get_time_to_the_nearest_filtered_news(long current_time)
 {
     if(ArraySize(filtered_forex_factory_news) == 0) return INT_MAX;
 
@@ -179,7 +248,7 @@ int ForexFactoryNewsHandlerClass::get_time_to_the_nearest_news(long current_time
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-double ForexFactoryNewsHandlerClass::get_max_spread_of_the_nearest_news(long current_time)
+double ForexFactoryNewsHandlerClass::get_max_spread_of_the_nearest_filtered_news(long current_time)
 {
     if(ArraySize(filtered_forex_factory_news) == 0) return INT_MAX;
 
@@ -200,7 +269,7 @@ double ForexFactoryNewsHandlerClass::get_max_spread_of_the_nearest_news(long cur
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-double ForexFactoryNewsHandlerClass::get_ave_profit_of_the_nearest_news(long current_time)
+double ForexFactoryNewsHandlerClass::get_ave_profit_of_the_nearest_filtered_news(long current_time)
 {
     if(ArraySize(filtered_forex_factory_news) == 0) return INT_MAX;
 
@@ -222,7 +291,7 @@ double ForexFactoryNewsHandlerClass::get_ave_profit_of_the_nearest_news(long cur
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-string ForexFactoryNewsHandlerClass::get_nearest_news_list_str(long current_time)
+string ForexFactoryNewsHandlerClass::get_nearest_filtered_news_list_str(long current_time)
 {
     if(ArraySize(filtered_forex_factory_news) == 0) return "";
 

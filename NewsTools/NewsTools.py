@@ -89,46 +89,73 @@ def update_pair_news_indicator_file():
     this_file_address, _ = os.path.split(__file__)
     # 3. Filter them based on this data in ForexAnalyzer's News/Result folder
     news_table  = pd.read_excel(os.path.join(f"{this_file_address}", "..", "..", "ForexAnalyzer", "News", "LastAvailable - NewsTable.xlsx"))
+    indicator_dict_list = []
     
-    for pair in PAIR_NAMES:
-        result_file = pd.read_csv(os.path.join(f"{this_file_address}", "..", "..", "ForexAnalyzer", "Analysis", "TicksAnalysisResults", f"{pair}-Result.csv"))
+    for pair in (list(PAIR_NAMES) + ["ALL"]):
         news_table_temp = news_table.copy()
-        filter_idx = np.zeros(len(news_table_temp))
-        
-        if len(result_file) == 0:
-            result_file = pd.read_csv(os.path.join(f"{this_file_address}", "..", "..", "ForexAnalyzer", "News", "Results", "Fake-Result.csv"))
-        
-        for currency, impact, title in zip(result_file.currency, result_file.impact, result_file.title):
-                    filter_idx = np.logical_or(np.logical_and(np.logical_and(
-                                                              news_table_temp.currency == currency, 
-                                                              news_table_temp.impact == impact), 
-                                                              news_table_temp.title == title), filter_idx)
-        news_table_temp = news_table_temp[filter_idx]
-        
-        # 4. Create csv files for each pair based on the file was available in News/Result folder
-        indicator_dict_list = []
-        news_table_temp.index = np.arange(0, len(news_table_temp))
-        for i in range(len(news_table_temp)):
-            if np.isnan(news_table_temp.hour[i]):
-                continue
-            # TODO: hour correction needs to be adapted to non-DLS situation 
-            time_of_news = pd.Timestamp(f"{news_table_temp.year[i]}.{news_table_temp.month[i]}.{news_table_temp.day[i]} {news_table_temp.hour[i]}:{news_table_temp.minute[i]}")
-            time_of_news = pd.Timestamp(time_of_news.to_datetime64() + 2 * 3600)
+        if pair != "ALL":
+            result_file = pd.read_csv(os.path.join(f"{this_file_address}", "..", "..", "ForexAnalyzer", "Analysis", "TicksAnalysisResults", f"{pair}-Result.csv"))
+            filter_idx = np.zeros(len(news_table_temp))
             
-            indicator_dict_list += [{"year" : time_of_news.year,
-                                     "month" : time_of_news.month,
-                                     "day" : time_of_news.day,
-                                     "hour" : time_of_news.hour,
-                                     "minute" : time_of_news.minute,
-                                     "title" : news_table_temp.title[i],
-                                     "impact" : news_table_temp.impact[i],
-                                     "mean_im_profit_pp" : result_file.mean_im_profit_pp[result_file.title == news_table_temp.title[i]].values[0],
-                                     "max_spread_pp" : result_file.max_spread_pp[result_file.title == news_table_temp.title[i]].values[0],
-                                     "std_im_profit_pp" : result_file.std_im_profit_pp[result_file.title == news_table_temp.title[i]].values[0],
-                                    }]
+            if len(result_file) == 0:
+                result_file = pd.read_csv(os.path.join(f"{this_file_address}", "..", "..", "ForexAnalyzer", "News", "Results", "Fake-Result.csv"))
+            
+            for currency, impact, title in zip(result_file.currency, result_file.impact, result_file.title):
+                        filter_idx = np.logical_or(np.logical_and(np.logical_and(
+                                                                news_table_temp.currency == currency, 
+                                                                news_table_temp.impact == impact), 
+                                                                news_table_temp.title == title), filter_idx)
+            news_table_temp = news_table_temp[filter_idx]
         
+            # 4. Create csv files for each pair based on the file was available in News/Result folder
+            indicator_dict_list = []
+            news_table_temp.index = np.arange(0, len(news_table_temp))
+            for i in range(len(news_table_temp)):
+                if np.isnan(news_table_temp.hour[i]):
+                    continue
+                # TODO: hour correction needs to be adapted to non-DLS situation 
+                time_of_news = pd.Timestamp(f"{news_table_temp.year[i]}.{news_table_temp.month[i]}.{news_table_temp.day[i]} {news_table_temp.hour[i]}:{news_table_temp.minute[i]}")
+                time_of_news = pd.Timestamp(time_of_news.to_datetime64() + 2 * 3600)
+                
+                indicator_dict_list += [{"year" : time_of_news.year,
+                                        "month" : time_of_news.month,
+                                        "day" : time_of_news.day,
+                                        "hour" : time_of_news.hour,
+                                        "minute" : time_of_news.minute,
+                                        "title" : news_table_temp.title[i],
+                                        "impact" : news_table_temp.impact[i],
+                                        "mean_im_profit_pp" : result_file.mean_im_profit_pp[result_file.title == news_table_temp.title[i]].values[0],
+                                        "max_spread_pp" : result_file.max_spread_pp[result_file.title == news_table_temp.title[i]].values[0],
+                                        "std_im_profit_pp" : result_file.std_im_profit_pp[result_file.title == news_table_temp.title[i]].values[0],
+                                        }]
+        else:
+            filter_idx = news_table_temp.impact == "High Impact Expected"
+            news_table_temp = news_table_temp[filter_idx]
+            news_table_temp.index = np.arange(0, len(news_table_temp))
+            for i in range(len(news_table_temp)):
+                if np.isnan(news_table_temp.hour[i]):
+                    continue
+                # TODO: hour correction needs to be adapted to non-DLS situation 
+                time_of_news = pd.Timestamp(f"{news_table_temp.year[i]}.{news_table_temp.month[i]}.{news_table_temp.day[i]} {news_table_temp.hour[i]}:{news_table_temp.minute[i]}")
+                time_of_news = pd.Timestamp(time_of_news.to_datetime64() + 2 * 3600)
+                
+                indicator_dict_list += [{"year" : time_of_news.year,
+                                        "month" : time_of_news.month,
+                                        "day" : time_of_news.day,
+                                        "hour" : time_of_news.hour,
+                                        "minute" : time_of_news.minute,
+                                        "title" : news_table_temp.title[i],
+                                        "impact" : news_table_temp.impact[i],
+                                        "mean_im_profit_pp" : 0,
+                                        "max_spread_pp" : 0,
+                                        "std_im_profit_pp" : 0,
+                                        }]
+            
         # 5. Put them in the "Files folder" of MT5
         try:
             pd.DataFrame(indicator_dict_list).to_csv(os.path.join(f"{this_file_address}", "..", "..", "..", "..", "..", "..", "Common", "Files", f"{pair}-NewsIndicatorFile.csv"))
         except:
-            pd.DataFrame(indicator_dict_list).to_csv(os.path.join(f"{this_file_address}", "..", "..", "..", "..", "..", "..", "..", f"users/{os.getlogin()}/AppData/Roaming/MetaQuotes/Terminal", "Common", "Files", f"{pair}-NewsIndicatorFile.csv"))
+            try:
+                pd.DataFrame(indicator_dict_list).to_csv(os.path.join(f"{this_file_address}", "..", "..", "..", "..", "..", "..", "..", "Common", "Files", f"{pair}-NewsIndicatorFile.csv"))
+            except:
+                pd.DataFrame(indicator_dict_list).to_csv(os.path.join(f"{this_file_address}", "..", "..", "..", "..", "..", "..", "..", f"users/{os.getlogin()}/AppData/Roaming/MetaQuotes/Terminal", "Common", "Files", f"{pair}-NewsIndicatorFile.csv"))
