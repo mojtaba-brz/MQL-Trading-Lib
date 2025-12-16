@@ -20,7 +20,9 @@ bool parse_news_file(string sym, NewsStruct &_news_list[])
     while (csv_file_handle < 0 && counter < 500000) {
         csv_file_handle = FileOpen(csv_file_name, FILE_ANSI | FILE_CSV | FILE_COMMON | FILE_READ, "\n");
         counter++;
+        Sleep(1);
     }
+    
     if(csv_file_handle < 0) {
         Print("Could not read " + csv_file_name + ". Error : " + IntegerToString(GetLastError()));
         MessageBox("Could not read " + csv_file_name + ". Error : " + IntegerToString(GetLastError()));
@@ -38,19 +40,19 @@ bool parse_news_file(string sym, NewsStruct &_news_list[])
                 StringSplit(line, ',', line_items);
 
                 time_temp_struct.year = (int)StringToInteger(line_items[1]);
-                time_temp_struct.mon = (int)StringToInteger(line_items[2]);
-                time_temp_struct.day = (int)StringToInteger(line_items[3]);
+                time_temp_struct.mon  = (int)StringToInteger(line_items[2]);
+                time_temp_struct.day  = (int)StringToInteger(line_items[3]);
                 time_temp_struct.hour = (int)StringToInteger(line_items[4]);
-                time_temp_struct.min = (int)StringToInteger(line_items[5]);
-                time_temp_struct.sec = 0;
-                news_struc_temp.time = StructToTime(time_temp_struct);
+                time_temp_struct.min  = (int)StringToInteger(line_items[5]);
+                time_temp_struct.sec  = 0;
+                news_struc_temp.time  = StructToTime(time_temp_struct);
 
-                news_struc_temp.title = line_items[6];
+                news_struc_temp.title  = line_items[6];
                 news_struc_temp.impact = line_items[7];
                 if(ArraySize(line_items) > 9) {
                     news_struc_temp.mean_im_profit_pp = StringToDouble(line_items[8]);
-                    news_struc_temp.max_spread_pp = StringToDouble(line_items[9]);
-                    news_struc_temp.std_im_profit_pp = StringToDouble(line_items[10]);
+                    news_struc_temp.max_spread_pp     = StringToDouble(line_items[9]);
+                    news_struc_temp.std_im_profit_pp  = StringToDouble(line_items[10]);
                 }
 
                 ArrayResize(_news_list, ArraySize(_news_list) + 1);

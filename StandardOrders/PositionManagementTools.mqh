@@ -157,7 +157,7 @@ bool has_open_positions(string sym, long _ea_magic_number)
     for(int i = 0; i < PositionsTotal(); i++) {
         ticket = PositionGetTicket(i);
         if(PositionSelectByTicket(ticket) &&
-           PositionGetString(POSITION_SYMBOL) == sym &&
+           (OrderGetString(ORDER_SYMBOL) == sym || sym == NULL) &&
            PositionGetInteger(POSITION_MAGIC) == _ea_magic_number)
             return true;
     }
@@ -173,7 +173,7 @@ bool has_open_orders(string sym, long _ea_magic_number)
     for(int i = 0; i < OrdersTotal(); i++) {
         ticket = OrderGetTicket(i);
         if(OrderSelect(ticket) &&
-           OrderGetString(ORDER_SYMBOL) == sym &&
+           (OrderGetString(ORDER_SYMBOL) == sym || sym == NULL) &&
            OrderGetInteger(ORDER_MAGIC) == _ea_magic_number)
             return true;
     }

@@ -132,6 +132,8 @@ def update_pair_news_indicator_file():
             filter_idx = news_table_temp.impact == "High Impact Expected"
             news_table_temp = news_table_temp[filter_idx]
             news_table_temp.index = np.arange(0, len(news_table_temp))
+            
+            indicator_dict_list = []
             for i in range(len(news_table_temp)):
                 if np.isnan(news_table_temp.hour[i]):
                     continue
