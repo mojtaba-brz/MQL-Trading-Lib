@@ -171,8 +171,9 @@ string ForexFactoryNewsHandlerClass::get_nearest_news_list_str(long current_time
 
     string nearest_news_list = "[";
     datetime news_time = forex_factory_news[i].release_time;
+    string   currency  = forex_factory_news[i].currency;
 
-    while(i >= 0 && news_time == forex_factory_news[i].release_time) {
+    while(i >= 0 && news_time == forex_factory_news[i].release_time && StringCompare(forex_factory_news[i].currency, currency) == 0) {
         if(forex_factory_news[i].impact == impact) {
             string title = forex_factory_news[i].title;
             StringReplace(title, "\\", "");
