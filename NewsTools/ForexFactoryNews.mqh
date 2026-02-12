@@ -160,13 +160,12 @@ string ForexFactoryNewsHandlerClass::get_nearest_news_list_str(long current_time
         if(MathAbs(news_date_temp - current_time) <= MathAbs(min_time_to_news)) {
             min_time_to_news = (int)(news_date_temp - current_time);
         } else {
-            i = pre_i;
             break;
         }
         pre_i = i;
     }
 
-    i = MathMax(0, MathMin(i, ArraySize(forex_factory_news) - 1));
+    i = MathMax(0, MathMin(pre_i, ArraySize(forex_factory_news) - 1));
     _news_idx = i;
 
     string nearest_news_list = "[";
