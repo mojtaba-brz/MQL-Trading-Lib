@@ -1,2 +1,39 @@
 # Python
 *.pyc
+
+# MetaEditor generated binaries and diagnostics
+*.ex4
+*.ex5
+*.log
+*.dbg
+*.prof
+*.prf
+*.mqproj.user
+
+# Temporary, editor and operating-system output
+*.tmp
+*.bak
+*.orig
+*.rej
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# MetaTrader history, tester and local runtime state
+*.opt
+*.tst
+*.gen
+*.fxt
+*.hst
+*.hcc
+*.hc
+*.ticks
+*.tkc
+*.db
+*.sqlite
+*.sqlite3

@@ -16,6 +16,7 @@
 #include "StandardOrders/StandardOrders.mqh"
 #include "Dashboard/Dashboard.mqh"
 #include "Report/Report.mqh"
+#include "RuntimeInputs/RuntimeInputContracts.mqh"
 
 #include "typedefs.mqh"
 #include "IndicatorUtils.mqh"
