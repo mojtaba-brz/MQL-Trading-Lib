@@ -17,6 +17,7 @@
 #include "Dashboard/Dashboard.mqh"
 #include "Report/Report.mqh"
 #include "RuntimeInputs/RuntimeInputContracts.mqh"
+#include "RuntimeInputs/CanonicalMarketData.mqh"
 
 #include "typedefs.mqh"
 #include "IndicatorUtils.mqh"
