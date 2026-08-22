@@ -1,7 +1,7 @@
 #ifndef MQLTRADINGLIB_RUNTIME_INPUT_CONTRACTS_MQH
 #define MQLTRADINGLIB_RUNTIME_INPUT_CONTRACTS_MQH
 
-// Production input contract shared by research exporters and live EAs.
+// Production input contract for live EAs and runtime-compatible validation.
 // Every value consumed by a production model must be generated in MQL5 at the
 // decision timestamp. Python may validate these values, but it must not provide
 // a second production implementation of the same feature.
