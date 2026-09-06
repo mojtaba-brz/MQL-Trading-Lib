@@ -14,6 +14,7 @@
 #include "Random/Random.mqh"
 #include "IndicatorReplacemnts/IndicatorReplacemnts.mqh"
 #include "StandardOrders/StandardOrders.mqh"
+#include "RiskManagement/RiskManagement.mqh"
 #include "Dashboard/Dashboard.mqh"
 #include "Report/Report.mqh"
 #include "RuntimeInputs/RuntimeInputContracts.mqh"
