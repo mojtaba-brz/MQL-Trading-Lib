@@ -1,0 +1,6 @@
+# MQL source and documentation use repository-stable LF endings.
+*.md  text eol=lf
+*.mq5 text eol=lf
+*.mqh text eol=lf
+*.py  text eol=lf
+*.bat text eol=crlf

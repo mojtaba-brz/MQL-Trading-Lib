@@ -113,6 +113,29 @@ public:
       return true;
      }
 
+   bool EventInCandle(const datetime candle_open,const string currency_one,
+                      const string currency_two,bool &has_event) const
+     {
+      has_event=false;
+      if(!_initialized || !WithinCoverage(candle_open))
+         return false;
+      int seconds=PeriodSeconds(_timeframe);
+      if(seconds<=0)
+         return false;
+      datetime candle_close=candle_open+seconds;
+      for(int i=0;i<ArraySize(_events);++i)
+        {
+         if(_events[i].currency!=currency_one && _events[i].currency!=currency_two)
+            continue;
+         if(_events[i].server_time>=candle_open && _events[i].server_time<candle_close)
+           {
+            has_event=true;
+            return true;
+           }
+        }
+      return true;
+     }
+
    int EventCount(void) const { return ArraySize(_events); }
   };
 

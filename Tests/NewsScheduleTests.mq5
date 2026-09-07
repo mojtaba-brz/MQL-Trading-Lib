@@ -30,6 +30,15 @@ void OnStart(void)
           schedule.Step(D'2026.09.01 14:30',"EUR","USD",blocked,reason) && !blocked);
    Expect("uncovered time fails closed",
           !schedule.Step(D'2026.09.02 12:00',"EUR","USD",blocked,reason) && blocked);
+   bool has_event=false;
+   Expect("news candle is identified",
+          schedule.EventInCandle(D'2026.09.01 14:00',"EUR","USD",has_event) &&
+          has_event);
+   Expect("adjacent candle is not news candle",
+          schedule.EventInCandle(D'2026.09.01 14:15',"EUR","USD",has_event) &&
+          !has_event);
+   Expect("news candle requires coverage",
+          !schedule.EventInCandle(D'2026.09.02 12:00',"EUR","USD",has_event));
    if(g_failures==0)
       Print("NewsScheduleTests: PASS");
    else
