@@ -1,5 +1,6 @@
 #include "ForexFactoryNews.mqh"
 #include "OfflineNewsUtils.mqh"
+#include "NewsSchedule.mqh"
 
 void highlight_news_on_the_chart(string pre_fix, ForexFactoryNews &news, datetime &_pre_obj_time, int &_news_index, double price = 0., color v_line_color = clrRed)
    {

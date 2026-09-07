@@ -55,6 +55,93 @@ bool AccountBalanceChangeSince(const datetime from_time,const datetime to_time,
    return MathIsValidNumber(net_change);
   }
 
+bool StrategyBalanceChangeSince(const datetime from_time,const datetime to_time,
+                                const string symbol,const long magic_number,
+                                double &net_change)
+  {
+   net_change=0.0;
+   if(from_time<=0 || to_time<from_time || symbol=="")
+      return false;
+   if(to_time==from_time)
+      return true;
+   if(!HistorySelect(from_time,to_time))
+      return false;
+
+   int total=HistoryDealsTotal();
+   for(int i=0;i<total;++i)
+     {
+      ulong ticket=HistoryDealGetTicket(i);
+      if(ticket==0)
+         return false;
+      if(HistoryDealGetString(ticket,DEAL_SYMBOL)!=symbol ||
+         HistoryDealGetInteger(ticket,DEAL_MAGIC)!=magic_number)
+         continue;
+      double contribution=HistoryDealGetDouble(ticket,DEAL_PROFIT)+
+                          HistoryDealGetDouble(ticket,DEAL_COMMISSION)+
+                          HistoryDealGetDouble(ticket,DEAL_SWAP)+
+                          HistoryDealGetDouble(ticket,DEAL_FEE);
+      if(!MathIsValidNumber(contribution))
+         return false;
+      net_change+=contribution;
+     }
+   return MathIsValidNumber(net_change);
+  }
+
+bool StrategyFloatingProfit(const string symbol,const long magic_number,
+                            double &floating_profit)
+  {
+   floating_profit=0.0;
+   if(symbol=="")
+      return false;
+   for(int i=0;i<PositionsTotal();++i)
+     {
+      ulong ticket=PositionGetTicket(i);
+      if(ticket==0)
+         return false;
+      if(PositionGetString(POSITION_SYMBOL)!=symbol ||
+         PositionGetInteger(POSITION_MAGIC)!=magic_number)
+         continue;
+      double contribution=PositionGetDouble(POSITION_PROFIT)+
+                          PositionGetDouble(POSITION_SWAP);
+      if(!MathIsValidNumber(contribution))
+         return false;
+      floating_profit+=contribution;
+     }
+   return MathIsValidNumber(floating_profit);
+  }
+
+bool StrategyDailyPercentFromValues(const double realized_change,
+                                    const double floating_profit,
+                                    const double midnight_balance,
+                                    double &daily_percent)
+  {
+   daily_percent=0.0;
+   if(!MathIsValidNumber(realized_change) ||
+      !MathIsValidNumber(floating_profit) ||
+      !MathIsValidNumber(midnight_balance) || midnight_balance<=0.0)
+      return false;
+   daily_percent=100.0*(realized_change+floating_profit)/midnight_balance;
+   return MathIsValidNumber(daily_percent);
+  }
+
+bool GetStrategyDailyPercent(const datetime broker_time,const string symbol,
+                             const long magic_number,
+                             const double midnight_balance,
+                             double &daily_percent)
+  {
+   daily_percent=0.0;
+   datetime midnight=BrokerDayStart(broker_time);
+   double realized_change=0.0;
+   double floating_profit=0.0;
+   if(midnight<=0 || midnight_balance<=0.0 ||
+      !StrategyBalanceChangeSince(midnight,broker_time,symbol,magic_number,
+                                  realized_change) ||
+      !StrategyFloatingProfit(symbol,magic_number,floating_profit))
+      return false;
+   return StrategyDailyPercentFromValues(realized_change,floating_profit,
+                                         midnight_balance,daily_percent);
+  }
+
 bool GetMidnightBalance(const datetime broker_time,double &midnight_balance)
   {
    midnight_balance=0.0;

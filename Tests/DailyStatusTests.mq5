@@ -24,6 +24,14 @@ void OnStart(void)
    ExpectDailyStatus("negative equity percent",MathAbs(percent+2.5)<1e-10);
    ExpectDailyStatus("invalid midnight balance rejected",
                      !DailyEquityPercentFromValues(100.0,0.0,percent));
+   ExpectDailyStatus("strategy realized and floating profit included",
+                     StrategyDailyPercentFromValues(2.0,-0.5,100.0,percent));
+   ExpectDailyStatus("strategy daily percent",MathAbs(percent-1.5)<1e-10);
+   ExpectDailyStatus("strategy loss percent",
+                     StrategyDailyPercentFromValues(-2.0,-1.0,100.0,percent) &&
+                     MathAbs(percent+3.0)<1e-10);
+   ExpectDailyStatus("strategy invalid midnight balance rejected",
+                     !StrategyDailyPercentFromValues(1.0,0.0,0.0,percent));
    ExpectDailyStatus("broker midnight",
                      BrokerDayStart(D'2026.09.06 18:37:41')==D'2026.09.06 00:00:00');
    double net_change=-1.0;
