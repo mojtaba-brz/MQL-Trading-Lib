@@ -26,6 +26,13 @@ void OnStart(void)
                      !DailyEquityPercentFromValues(100.0,0.0,percent));
    ExpectDailyStatus("broker midnight",
                      BrokerDayStart(D'2026.09.06 18:37:41')==D'2026.09.06 00:00:00');
+   double net_change=-1.0;
+   ExpectDailyStatus("zero-length midnight interval is valid",
+                     AccountBalanceChangeSince(D'2026.09.06 00:00:00',
+                                               D'2026.09.06 00:00:00',
+                                               net_change));
+   ExpectDailyStatus("zero-length midnight balance change is zero",
+                     MathAbs(net_change)<1e-10);
 
    if(g_daily_status_failures==0)
       Print("DailyStatusTests: PASS");

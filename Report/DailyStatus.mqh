@@ -28,7 +28,14 @@ bool AccountBalanceChangeSince(const datetime from_time,const datetime to_time,
                                double &net_change)
   {
    net_change=0.0;
-   if(from_time<=0 || to_time<from_time || !HistorySelect(from_time,to_time))
+   if(from_time<=0 || to_time<from_time)
+      return false;
+   // At an exact broker-midnight tester start there is no interval to query.
+   // Its balance change is deterministically zero; some tester builds return
+   // false for HistorySelect(t,t), which must not disable trading all day.
+   if(to_time==from_time)
+      return true;
+   if(!HistorySelect(from_time,to_time))
       return false;
 
    int total=HistoryDealsTotal();
