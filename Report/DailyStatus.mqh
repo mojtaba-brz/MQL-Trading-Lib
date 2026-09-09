@@ -87,6 +87,37 @@ bool StrategyBalanceChangeSince(const datetime from_time,const datetime to_time,
    return MathIsValidNumber(net_change);
   }
 
+// Returns the closed-deal result for one EA instance over the supplied
+// interval. Unlike StrategyBalanceChangeSince, a zero start time intentionally
+// means all account history available to the terminal.
+bool StrategyRealizedProfitSince(const datetime from_time,const datetime to_time,
+                                 const string symbol,const long magic_number,
+                                 double &realized_profit)
+  {
+   realized_profit=0.0;
+   if(from_time<0 || to_time<from_time || symbol=="" ||
+      !HistorySelect(from_time,to_time))
+      return false;
+   int total=HistoryDealsTotal();
+   for(int i=0;i<total;++i)
+     {
+      ulong ticket=HistoryDealGetTicket(i);
+      if(ticket==0)
+         return false;
+      if(HistoryDealGetString(ticket,DEAL_SYMBOL)!=symbol ||
+         HistoryDealGetInteger(ticket,DEAL_MAGIC)!=magic_number)
+         continue;
+      double contribution=HistoryDealGetDouble(ticket,DEAL_PROFIT)+
+                          HistoryDealGetDouble(ticket,DEAL_COMMISSION)+
+                          HistoryDealGetDouble(ticket,DEAL_SWAP)+
+                          HistoryDealGetDouble(ticket,DEAL_FEE);
+      if(!MathIsValidNumber(contribution))
+         return false;
+      realized_profit+=contribution;
+     }
+   return MathIsValidNumber(realized_profit);
+  }
+
 bool StrategyFloatingProfit(const string symbol,const long magic_number,
                             double &floating_profit)
   {
@@ -140,6 +171,21 @@ bool GetStrategyDailyPercent(const datetime broker_time,const string symbol,
       return false;
    return StrategyDailyPercentFromValues(realized_change,floating_profit,
                                          midnight_balance,daily_percent);
+  }
+
+bool GetStrategyTotalProfit(const datetime broker_time,const string symbol,
+                            const long magic_number,double &total_profit)
+  {
+   total_profit=0.0;
+   double realized_profit=0.0;
+   double floating_profit=0.0;
+   if(broker_time<=0 ||
+      !StrategyRealizedProfitSince(0,broker_time,symbol,magic_number,
+                                   realized_profit) ||
+      !StrategyFloatingProfit(symbol,magic_number,floating_profit))
+      return false;
+   total_profit=realized_profit+floating_profit;
+   return MathIsValidNumber(total_profit);
   }
 
 bool GetMidnightBalance(const datetime broker_time,double &midnight_balance)
